@@ -36,18 +36,25 @@ import java.io.OutputStream;
 
 import static android.os.Environment.DIRECTORY_PICTURES;
 
-public class AndroidLauncher extends AndroidApplication implements tess_interface {
+public class AndroidLauncher extends AndroidApplication {
 	private MyGdxGame game;
 	private Activity ActivityCompat;
 	private TessBaseAPI baseApi;
+	private interface_implement tess;
+	private splash textCode;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ActivityCompat  = new Activity();
-		checkFile(new File(getFilesDir()+"/tesseract/tessdata"));
-		game = new MyGdxGame();
+		baseApi = new TessBaseAPI();
+		tess = new interface_implement(this,baseApi);
+		game = new MyGdxGame(tess);
+		textCode = new splash();
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+
+		baseApi.init(getFilesDir().toString()+"/tesseract/", "eng");
+		checkFile(new File(getFilesDir()+"/tesseract/tessdata"));
 		initialize(game, config);
 //		Log.e(" ",Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).toString());
 	}
@@ -89,69 +96,4 @@ public class AndroidLauncher extends AndroidApplication implements tess_interfac
 		}
 	}
 
-	@Override
-	public void TessBaseAPI() {
-		baseApi = new TessBaseAPI();
-		baseApi.init(getFilesDir().toString()+"/tesseract/", "eng");
-	}
-
-	@TargetApi(Build.VERSION_CODES.M)
-	@Override
-	public ClickListener setGallerySelect() {
-		ClickListener event = new ClickListener(){
-			@Override
-			public boolean handle(Event e){
-				if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(getContext(),Manifest.permission.CAMERA)) {
-					Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-					startActivityForResult(i, 1);
-				} else {
-					if (ActivityCompat.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-						new AlertDialog.Builder(getContext())
-								.setMessage("This app needs permission to use The phone Camera in order to activate the Scanner")
-								.setPositiveButton("Allow", new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int which) {
-										ActivityCompat.requestPermissions(new String[]{Manifest.permission.CAMERA}, 1);
-									}
-								}).show();
-					} else {
-						ActivityCompat.requestPermissions(new String[]{Manifest.permission.CAMERA}, 1);
-					}
-				}
-				Log.e("btn","Btn ok");
-				return true;
-			}
-		};
-		return event;
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-		switch (requestCode) {
-			case 1:
-				if (resultCode ==  RESULT_OK  ) {
-					Uri selectedImage = imageReturnedIntent.getData();
-					String[] filePathColumn = {MediaStore.Images.Media.DATA};
-					Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-					cursor.moveToFirst();
-					if (cursor.moveToFirst()) {
-						int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-						String filePath = cursor.getString(columnIndex);
-						Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-						try {
-							baseApi.setImage(bitmap.copy(Bitmap.Config.ARGB_8888,true));
-							String recognizedText = baseApi.getUTF8Text();
-							game.setCodeFromOCR(recognizedText);
-							Log.e("result: ",recognizedText);
-						}catch (Exception e){
-							Log.e(" ",e.toString());
-						}
-					}
-					cursor.close();
-				}
-				break;
-		}
-	}
 }

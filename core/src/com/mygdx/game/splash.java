@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class splash implements Screen {
-    private tess_interface test;
     SpriteBatch batch;
     Texture img;
     TextureAtlas charAtlas;
@@ -22,6 +21,11 @@ public class splash implements Screen {
     TextArea code;
     Stage stage;
     TextButton pictureBtn;
+    private  tess_interface tess;
+
+    public splash(tess_interface tess){
+        this.tess = tess;
+    }
 
     @Override
     public void show() {
@@ -35,6 +39,7 @@ public class splash implements Screen {
         pictureBtn.setWidth(300);
         pictureBtn.setY(300);
         pictureBtn.setX(0);
+        pictureBtn.addListener(tess.setGallerySelect());
         code.setWidth(500);
         code.setHeight(300);
         code.setX(0);
