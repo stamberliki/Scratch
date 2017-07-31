@@ -1,31 +1,17 @@
 package com.mygdx.game;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,27 +20,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static android.os.Environment.DIRECTORY_PICTURES;
-
 public class AndroidLauncher extends AndroidApplication {
 	private MyGdxGame game;
 	private Activity ActivityCompat;
 	private TessBaseAPI baseApi;
 	private interface_implement tess;
-	private splash textCode;
+	private com.mygdx.game.game textCode;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		ActivityCompat  = new Activity();
 		baseApi = new TessBaseAPI();
 		tess = new interface_implement(this,baseApi);
 		game = new MyGdxGame(tess);
-		textCode = new splash();
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		checkFile(new File(getFilesDir()+"/tesseract/tessdata"));
 
 		baseApi.init(getFilesDir().toString()+"/tesseract/", "eng");
-		checkFile(new File(getFilesDir()+"/tesseract/tessdata"));
 		initialize(game, config);
 //		Log.e(" ",Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).toString());
 	}
@@ -96,4 +79,32 @@ public class AndroidLauncher extends AndroidApplication {
 		}
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+		switch (requestCode) {
+			case 1:
+				if (resultCode ==  RESULT_OK  ) {
+					Uri selectedImage = imageReturnedIntent.getData();
+					String[] filePathColumn = {MediaStore.Images.Media.DATA};
+					Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+					cursor.moveToFirst();
+					if (cursor.moveToFirst()) {
+						int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+						String filePath = cursor.getString(columnIndex);
+						Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+						try {
+							baseApi.setImage(bitmap.copy(Bitmap.Config.ARGB_8888,true));
+							String recognizedText = baseApi.getUTF8Text();
+							Log.e("Scan: ",recognizedText);
+						}catch (Exception e){
+							Log.e(" ",e.toString());
+						}
+					}
+					cursor.close();
+				}
+				break;
+		}
+	}
 }

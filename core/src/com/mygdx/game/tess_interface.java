@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
@@ -8,6 +10,4 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public interface tess_interface  {
     ClickListener setGallerySelect();
-    String getScanCode();
-
 }
