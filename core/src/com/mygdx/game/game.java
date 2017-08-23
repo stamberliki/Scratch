@@ -22,6 +22,7 @@ public class game implements Screen {
     Stage stage;
     TextButton pictureBtn;
     private  tess_interface tess;
+    private float elapsedTime = 0;
 
     public game(tess_interface tess){
         this.tess = tess;
@@ -30,23 +31,17 @@ public class game implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        charAtlas = new TextureAtlas(Gdx.files.internal("character.atlas"));
+        charAtlas = new TextureAtlas(Gdx.files.internal("char.atlas"));
         animation = new com.badlogic.gdx.graphics.g2d.Animation(1/10f, charAtlas.getRegions());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         code = new TextArea("",skin);
         pictureBtn = new TextButton("OCR",skin);
         stage = new Stage();
 
-
-        pictureBtn.setHeight(50);
-        pictureBtn.setWidth(300);
-        pictureBtn.setY(300);
-        pictureBtn.setX(0);
+        pictureBtn.setBounds(0,0,100,50);
         pictureBtn.addListener(tess.setGallerySelect());
-        code.setWidth(500);
-        code.setHeight(300);
-        code.setX(0);
-        code.setY(0);
+        code.setBounds(Gdx.graphics.getWidth()/2,0,Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight());
+
         Gdx.input.setInputProcessor(stage);
         stage.addActor(code);
         stage.addActor(pictureBtn);
@@ -60,8 +55,11 @@ public class game implements Screen {
         batch.begin();
 
         stage.draw();
+//        elapsedTime += Gdx.graphics.getDeltaTime();
+//        batch.draw((Texture) animation.getKeyFrame(elapsedTime, true), 0, 0);
 
         batch.end();
+
     }
 
     @Override

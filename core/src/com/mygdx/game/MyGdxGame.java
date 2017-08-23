@@ -8,7 +8,7 @@ public class MyGdxGame extends Game {
 
 	public MyGdxGame(tess_interface tess){
 		this.tess = tess;
-		SplashScreen = new splash(tess);
+		SplashScreen = new splash(tess,this);
 	}
 
 	@Override

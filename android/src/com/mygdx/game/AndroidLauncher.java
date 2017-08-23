@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -20,12 +21,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import static android.os.Environment.DIRECTORY_PICTURES;
+
 public class AndroidLauncher extends AndroidApplication {
 	private MyGdxGame game;
 	private Activity ActivityCompat;
 	private TessBaseAPI baseApi;
 	private interface_implement tess;
-	private com.mygdx.game.game textCode;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class AndroidLauncher extends AndroidApplication {
 
 		baseApi.init(getFilesDir().toString()+"/tesseract/", "eng");
 		initialize(game, config);
-//		Log.e(" ",Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).toString());
+		Log.e(" ", Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).toString());
 	}
 
 	private void copyFiles() {
