@@ -36,8 +36,8 @@ public class splash implements Screen {
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        splashText = new Label("splash screen '\n' tap to continue ",skin);
-        splashText.setBounds(0,0,0,0);
+        splashText = new Label("splash screen \n tap to continue ",skin);
+        splashText.setBounds(Gdx.graphics.getWidth()/2-100/2,Gdx.graphics.getHeight()/2-100/2,300,100);
 
         stage.addActor(splashText);
 
