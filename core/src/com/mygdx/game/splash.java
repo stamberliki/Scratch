@@ -1,48 +1,56 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+
+/**
+ * Created by Anony on 7/28/2017.
+ */
 
 public class splash implements Screen {
-    private tess_interface test;
     SpriteBatch batch;
-    Texture img;
-    TextureAtlas charAtlas;
     com.badlogic.gdx.graphics.g2d.Animation animation;
     Skin skin;
-    TextArea code;
     Stage stage;
-    TextButton pictureBtn;
+    Label splashText;
+    private tess_interface tess;
+    private Game game;
+
+    public splash(tess_interface tess, Game game){
+        this.tess = tess;
+        this.game = game;
+    }
 
     @Override
     public void show() {
         batch = new SpriteBatch();
-        charAtlas = new TextureAtlas(Gdx.files.internal("character.atlas"));
-        animation = new com.badlogic.gdx.graphics.g2d.Animation(1/10f, charAtlas.getRegions());
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-        code = new TextArea("",skin);
-        pictureBtn = new TextButton("OCR",skin);
-        pictureBtn.setHeight(50);
-        pictureBtn.setWidth(300);
-        pictureBtn.setY(300);
-        pictureBtn.setX(0);
-        code.setWidth(500);
-        code.setHeight(300);
-        code.setX(0);
-        code.setY(0);
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
-        stage.addActor(code);
-        stage.addActor(pictureBtn);
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
+
+        splashText = new Label("splash screen '\n' tap to continue ",skin);
+        splashText.setBounds(0,0,0,0);
+
+        stage.addActor(splashText);
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+//        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(new InputAdapter(){
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                game.setScreen(new mainMenu(tess,game));
+                return true;
+            }
+        });
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -62,7 +70,6 @@ public class splash implements Screen {
 
     }
 
-
     @Override
     public void pause() {
 
@@ -80,13 +87,9 @@ public class splash implements Screen {
 
     @Override
     public void dispose() {
-
+        this.batch.dispose();
+        Gdx.input.setInputProcessor(null);
+        this.stage.dispose();
     }
-
-
-    public void setCodeFromOCR(String codeOCR){
-        code.setText(codeOCR);
-    }
-    public void setInputListener(InputListener event){ pictureBtn.addListener(event); }
 
 }
