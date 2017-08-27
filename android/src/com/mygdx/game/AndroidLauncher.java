@@ -98,8 +98,7 @@ public class AndroidLauncher extends AndroidApplication {
 						Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 						try {
 							baseApi.setImage(bitmap.copy(Bitmap.Config.ARGB_8888,true));
-							String recognizedText = baseApi.getUTF8Text();
-							Log.e("Scan: ",recognizedText);
+							tess.setCodeOCR(baseApi.getUTF8Text());
 						}catch (Exception e){
 							Log.e(" ",e.toString());
 						}
