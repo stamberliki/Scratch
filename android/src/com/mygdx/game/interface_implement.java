@@ -32,10 +32,12 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 public class interface_implement extends AndroidLauncher implements tess_interface {
     private AndroidApplication app;
     private TessBaseAPI tess;
+    private String code;
 
     public interface_implement(AndroidApplication p, TessBaseAPI tess){
         this.tess = tess;
         app = p;
+        code = "";
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -71,5 +73,13 @@ public class interface_implement extends AndroidLauncher implements tess_interfa
             };
         return ret;
     }
+
+    @Override
+    public void setCodeOCR(String code){
+        this.code = code;
+    }
+
+    @Override
+    public String getCode(){return code;}
 
 }

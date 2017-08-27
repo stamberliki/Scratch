@@ -43,7 +43,7 @@ public class mainMenu implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 dispose();
-                game.setScreen(new game(tess));
+                game.setScreen(new game(tess,game));
             }
         });
         gameStart.setBounds(Gdx.graphics.getWidth()/2 - buttonWidth/2,
@@ -64,6 +64,7 @@ public class mainMenu implements Screen {
         stage.addActor(options);
         stage.addActor(help);
         Gdx.input.setInputProcessor(stage);
+//        Gdx.input.setCatchBackKey(true);
     }
 
     @Override
