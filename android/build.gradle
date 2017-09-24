@@ -72,4 +72,5 @@ task run(type: Exec) {
 dependencies {
     compile project(':libraries:tess:tess-two')
     compile project(':core')
+    compile files('libs/bsh-core-2.0b4.jar')
 }

@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -21,11 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import bsh.Interpreter;
+
 import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class AndroidLauncher extends AndroidApplication {
 	private MyGdxGame game;
-	private Activity ActivityCompat;
 	private TessBaseAPI baseApi;
 	private interface_implement tess;
 
@@ -33,15 +33,11 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		ActivityCompat  = new Activity();
-		baseApi = new TessBaseAPI();
-		tess = new interface_implement(this,baseApi);
+		tess = new interface_implement(this);
 		game = new MyGdxGame(tess);
 		checkFile(new File(getFilesDir()+"/tesseract/tessdata"));
 
-		baseApi.init(getFilesDir().toString()+"/tesseract/", "eng");
 		initialize(game, config);
-		Log.e(" ", Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).toString());
 	}
 
 	private void copyFiles() {
@@ -80,7 +76,6 @@ public class AndroidLauncher extends AndroidApplication {
 			}
 		}
 	}
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -97,8 +92,11 @@ public class AndroidLauncher extends AndroidApplication {
 						String filePath = cursor.getString(columnIndex);
 						Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 						try {
+							baseApi = new TessBaseAPI();
+							baseApi.init(getFilesDir().toString()+"/tesseract/", "eng");
 							baseApi.setImage(bitmap.copy(Bitmap.Config.ARGB_8888,true));
 							tess.setCodeOCR(baseApi.getUTF8Text());
+							baseApi.end();
 						}catch (Exception e){
 							Log.e(" ",e.toString());
 						}

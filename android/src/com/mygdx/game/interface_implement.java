@@ -8,34 +8,24 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
-/**
- * Created by Anony on 7/17/2017.
- */
+import bsh.Interpreter;
 
 public class interface_implement extends AndroidLauncher implements tess_interface {
     private AndroidApplication app;
     private TessBaseAPI tess;
     private String code;
+    private Interpreter interpreter;
 
-    public interface_implement(AndroidApplication p, TessBaseAPI tess){
-        this.tess = tess;
+    public interface_implement(AndroidApplication p){
+        this.tess = new TessBaseAPI();
         app = p;
         code = "";
     }
@@ -81,5 +71,16 @@ public class interface_implement extends AndroidLauncher implements tess_interfa
 
     @Override
     public String getCode(){return code;}
+
+    @Override
+    public void runCode(String code,Object o) {
+        interpreter = new Interpreter();
+        try {
+            interpreter.set("hero", o);
+            interpreter.eval(code);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 }
