@@ -3,7 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 
 public class MyGdxGame extends Game {
-	private  tess_interface tess;
+	private tess_interface tess;
 	private splash SplashScreen;
 
 	public MyGdxGame(tess_interface tess){
