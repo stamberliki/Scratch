@@ -4,11 +4,11 @@ import com.badlogic.gdx.Game;
 
 public class MyGdxGame extends Game {
 	private tess_interface tess;
-	private splash SplashScreen;
+	private com.mygdx.game.screens.splash SplashScreen;
 
 	public MyGdxGame(tess_interface tess){
 		this.tess = tess;
-		SplashScreen = new splash(tess,this);
+		SplashScreen = new com.mygdx.game.screens.splash(tess,this);
 	}
 
 	@Override

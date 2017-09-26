@@ -1,13 +1,9 @@
-package com.mygdx.game;
+package com.mygdx.game.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
@@ -42,4 +38,5 @@ public class map {
 
     public float getMapHeight(){return map.getProperties().get("height",Integer.class)*map.getProperties().get("tileheight",Integer.class);}
 
+    public OrthographicCamera getCamera(){return  camera;}
 }

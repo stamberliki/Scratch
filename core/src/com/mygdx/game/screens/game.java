@@ -1,11 +1,15 @@
-package com.mygdx.game;
+package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -13,10 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.game.character_interface;
+import com.mygdx.game.entity.character;
+import com.mygdx.game.entity.coin;
+import com.mygdx.game.tess_interface;
 
-public class game implements Screen {
+public class game implements Screen,GestureDetector.GestureListener {
     private SpriteBatch batch;
-    private character character;
+    private com.mygdx.game.entity.character character;
     private character_interface hero;
     private Skin skin;
     private TextArea code;
@@ -24,16 +32,19 @@ public class game implements Screen {
     private TextButton pictureBtn,runCode;
     private tess_interface tess;
     private Game game;
-    private float elapsedTime = 0;
-    private map Map;
-    private codeParser codeParser;
+    private float elapsedTime;
+    private com.mygdx.game.entity.map Map;
+    private com.mygdx.game.entity.coin[] coin;
     private OrthographicCamera camera;
-    final StringBuilder build = new StringBuilder();
+    private InputMultiplexer inputMultiplexer;
 
-    public game(tess_interface tess,Game game){
+    private final StringBuilder build = new StringBuilder();
+
+    public game(tess_interface tess,Game game,String mapLevel){
         this.tess = tess;
         this.game = game;
-        Map = new map("level1.tmx");
+        Map = new com.mygdx.game.entity.map(mapLevel+".tmx");
+        elapsedTime = 0;
     }
 
     @Override
@@ -43,15 +54,14 @@ public class game implements Screen {
         code = new TextArea("",skin);
         stage = new Stage();
         character = new character(9*16,9*16);
+        coin = new coin[2];
         hero = character;
-        codeParser = new codeParser(character);
-        character.setCodeParser(codeParser);
 
         pictureBtn = new TextButton("OCR",skin);
         pictureBtn.setBounds(0,0,100,50);
         pictureBtn.addListener(tess.setGallerySelect());
 
-        code.setBounds(Gdx.graphics.getWidth()/2,0,Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight());
+        code.setBounds((Gdx.graphics.getWidth()/2)*1.25f,0,(Gdx.graphics.getWidth()/2)*0.75f,Gdx.graphics.getHeight());
         code.setFocusTraversal(false);
         code.setScale(200);
         code.setTextFieldListener(new TextField.TextFieldListener() {
@@ -73,13 +83,15 @@ public class game implements Screen {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            tess.runCode(code.getText(), hero);
+                            tess.runCode("hero.moveUp();", hero);
                         }
                     }).start();
                 }
             }
         });
 
+        coin[0] = new coin(9*16,10*16);
+        coin[1] = new coin(9*16,11*16);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         camera.setToOrtho(false);
         camera.viewportWidth = Map.getMapWidth()*0.8f;
@@ -92,7 +104,12 @@ public class game implements Screen {
         stage.addActor(code);
         stage.addActor(pictureBtn);
         stage.addActor(runCode);
-        Gdx.input.setInputProcessor(stage);
+
+        GestureDetector gd = new GestureDetector(this);
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(gd);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -101,7 +118,7 @@ public class game implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
 
-        camera.position.set((character.getX()+camera.viewportWidth/4)+16, character.getY()+16,0);
+        camera.position.set((character.getX()+camera.viewportWidth/6)+16, character.getY()+16,0);
         camera.update();
 
         batch.setProjectionMatrix(camera.combined);
@@ -112,6 +129,13 @@ public class game implements Screen {
         Map.draw(batch);
 
         batch.begin();
+
+        for (com.mygdx.game.entity.coin coinLocation : coin){
+            if (Intersector.overlaps(coinLocation.getHitBox(),character.getHitBox())){
+                coinLocation.isCollide = true;
+            }
+            coinLocation.draw(batch,elapsedTime);
+        }
 
         character.draw(batch,elapsedTime);
 
@@ -150,4 +174,52 @@ public class game implements Screen {
         this.stage.dispose();
     }
 
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        camera.translate(-deltaX,deltaY,0);
+        camera.update();
+        return true;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        camera.zoom = (initialDistance/distance)*0.5f;
+        camera.update();
+        return true;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
+    }
+
+    @Override
+    public void pinchStop() {
+
+    }
 }

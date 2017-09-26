@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import java.util.Scanner;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,9 +9,9 @@ public class codeParser {
     private String currentCode;
     private Scanner codeScan;
     private boolean isRunning,isStatement,error;
-    private character character;
+    private com.mygdx.game.entity.character character;
 
-    public codeParser(character character){
+    public codeParser(com.mygdx.game.entity.character character){
         isStatement = false;
         error = false;
         isRunning = false;
