@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Json;
 import com.mygdx.game.tess_interface;
 
 public class splash implements Screen {
@@ -28,6 +29,7 @@ public class splash implements Screen {
 
     @Override
     public void show() {
+        Json json = new Json();
         batch = new SpriteBatch();
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("uiskin.json"));

@@ -6,11 +6,13 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 
 public class map {
     private TiledMap map;
     private TiledMapRenderer mapRenderer;
     private OrthographicCamera camera;
+    private Rectangle[] edgeBox;
 
     public map(String mapStage){
         map = new TmxMapLoader().load(mapStage);
@@ -18,6 +20,12 @@ public class map {
         camera.setToOrtho(false,getMapWidth(),getMapHeight());
         camera.update();
         mapRenderer = new OrthogonalTiledMapRenderer(map);
+        map.getLayers().get("top");
+        edgeBox = new Rectangle[4];
+        edgeBox[0] = new Rectangle(0,0,1,getMapHeight());
+        edgeBox[1] = new Rectangle(0,0,getMapWidth(),1);
+        edgeBox[2] = new Rectangle(0,getMapHeight(),getMapWidth(),1);
+        edgeBox[3] = new Rectangle(getMapWidth(),0,1,getMapHeight());
     }
 
     public void draw(SpriteBatch batch){
@@ -39,4 +47,6 @@ public class map {
     public float getMapHeight(){return map.getProperties().get("height",Integer.class)*map.getProperties().get("tileheight",Integer.class);}
 
     public OrthographicCamera getCamera(){return  camera;}
+
+    public TiledMap getMap(){return map;}
 }

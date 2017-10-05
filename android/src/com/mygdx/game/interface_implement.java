@@ -35,6 +35,10 @@ public class interface_implement extends AndroidLauncher implements tess_interfa
     public ClickListener setGallerySelect() {
             ClickListener ret = new ClickListener() {
                 @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    return true;
+                }
+                @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     try {
                         if (ContextCompat.checkSelfPermission(app.getContext(),Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -73,7 +77,7 @@ public class interface_implement extends AndroidLauncher implements tess_interfa
     public String getCode(){return code;}
 
     @Override
-    public void runCode(String code,Object o) {
+    public boolean runCode(String code,Object o) {
         interpreter = new Interpreter();
         try {
             interpreter.set("hero", o);
@@ -81,6 +85,7 @@ public class interface_implement extends AndroidLauncher implements tess_interfa
         }catch (Exception e){
             e.printStackTrace();
         }
+        return true;
     }
 
 }

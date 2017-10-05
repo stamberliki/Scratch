@@ -18,7 +18,7 @@ public class character implements character_interface {
     private float width,height;
     private String currentCommand;
     private com.mygdx.game.codeParser codeParser;
-    private boolean isRunning;
+    public boolean isRunning,isBlocked;
     private Rectangle hitBox;
 
     private static final float speed = 1;
@@ -35,7 +35,7 @@ public class character implements character_interface {
         leftIdleAnimation = new Animation<TextureRegion>(1,tmp[1][4]);
         rightIdleAnimation = new Animation<TextureRegion>(1,tmp[2][4]);
         state = downIdleAnimation;
-        hitBox = new Rectangle(0,0,32,16);
+        hitBox = new Rectangle(0,0,30,14);
         hitBox.x = this.x;
         hitBox.y = this.y;
 
@@ -43,11 +43,12 @@ public class character implements character_interface {
         this.height = 32;
         this.x = x;
         this.y = y;
-        this.steps = 32;
+        this.steps = 32*3;
         nextX = x;
         nextY = y;
         currentCommand = "";
         isRunning = false;
+        isBlocked = false;
     }
 
     public void setCodeParser(codeParser codeParser){this.codeParser = codeParser;}
@@ -76,10 +77,6 @@ public class character implements character_interface {
 
     public Rectangle getHitBox(){return hitBox;}
 
-    public void setRunning(boolean bol){isRunning = bol;}
-
-    public boolean isRunning(){return isRunning;}
-
     public void run(){
         nextX = x;
         nextY = y;
@@ -94,20 +91,21 @@ public class character implements character_interface {
     }
 
     public void render(){
-        if (y < nextY){//up
-            y += speed;
-        }
-        if(x < nextX){//right
-            x += speed;
-        }
-        if(y > nextY){//down
-            y -= speed;
-        }
-        if(x > nextX){//left
-            x -= speed;
+        if (!isBlocked){
+            if (y < nextY){//up
+                y += speed;
+            }
+            if(x < nextX){//right
+                x += speed;
+            }
+            if(y > nextY){//down
+                y -= speed;
+            }
+            if(x > nextX){//left
+                x -= speed;
+            }
         }
         if (x == nextX && y == nextY){
-            isRunning = false;
             if (currentCommand.equals("up")){
                 state = upIdleAnimation;
             }

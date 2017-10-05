@@ -20,7 +20,7 @@ public class coin {
         coinTexture = new Texture(Gdx.files.internal("B.png"));
         TextureRegion[][] tmp = TextureRegion.split(coinTexture,coinTexture.getWidth()/16,coinTexture.getHeight()/16);
         coinAnimation = new Animation<TextureRegion>(1,tmp[3][8]);
-        hitBox = new Rectangle(0,0,32,16);
+        hitBox = new Rectangle(0,0,32,32);
         hitBox.x = x;
         hitBox.y = y;
         this.x = x;
@@ -37,7 +37,7 @@ public class coin {
     public void draw(SpriteBatch batch,float time){
         if (y < prevY+32)
             batch.draw(coinAnimation.getKeyFrame(time,true),x,y,width,height);
-        if (isCollide && y < prevY+32){ y += 2*time;}
+        if (isCollide && y < prevY+32){ y += 1*time;}
     }
 
 }

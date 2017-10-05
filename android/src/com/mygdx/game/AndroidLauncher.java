@@ -64,6 +64,7 @@ public class AndroidLauncher extends AndroidApplication {
 			e.printStackTrace();
 		}
 	}
+
 	private void checkFile(File dir) {
 		if (!dir.exists()&& dir.mkdirs()){
 			copyFiles();
@@ -76,9 +77,9 @@ public class AndroidLauncher extends AndroidApplication {
 			}
 		}
 	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
 		switch (requestCode) {
 			case 1:
@@ -91,15 +92,11 @@ public class AndroidLauncher extends AndroidApplication {
 						int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 						String filePath = cursor.getString(columnIndex);
 						Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-						try {
 							baseApi = new TessBaseAPI();
 							baseApi.init(getFilesDir().toString()+"/tesseract/", "eng");
 							baseApi.setImage(bitmap.copy(Bitmap.Config.ARGB_8888,true));
 							tess.setCodeOCR(baseApi.getUTF8Text());
 							baseApi.end();
-						}catch (Exception e){
-							Log.e(" ",e.toString());
-						}
 					}
 					cursor.close();
 				}

@@ -21,10 +21,6 @@ public class mainMenu implements Screen {
     private tess_interface tess;
     private Game game;
 
-    private static final int buttonWidth = 300;
-    private static final int buttonHeight = 50;
-
-
     public mainMenu(tess_interface tess, Game game){
         this.tess = tess;
         this.game = game;
@@ -32,7 +28,10 @@ public class mainMenu implements Screen {
 
     @Override
     public void show() {
-        float aspectRatio = Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+        float buttonWidth = screenWidth*0.4f;
+        float buttonHeight = screenHeight*0.1f;
         batch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage();
@@ -42,12 +41,12 @@ public class mainMenu implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 dispose();
-                game.setScreen(new game(tess,game,"level1"));
+                game.setScreen(new levelSelect(tess,game));
             }
         });
-        gameStart.setBounds(Gdx.graphics.getWidth()/2 - buttonWidth/2,
-                Gdx.graphics.getHeight()/2 - buttonHeight/2 + buttonHeight*2,
-                buttonWidth*aspectRatio,buttonHeight*aspectRatio);
+        gameStart.setBounds(screenWidth/2 - buttonWidth/2,
+                screenHeight/2 - buttonHeight/2 + buttonHeight*2,
+                buttonWidth,buttonHeight);
 //
 //        options = new TextButton("Options",skin);
 //        options.setBounds(Gdx.graphics.getWidth()/2 - buttonWidth/2,
