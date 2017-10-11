@@ -1,9 +1,5 @@
 package com.mygdx.game.entity;
 
-/**
- * Created by Anony on 10/5/2017.
- */
-
 public class conditions {
     private int noOfCoins;
     private boolean characterFinish;
@@ -15,11 +11,10 @@ public class conditions {
 
     public void setCharacterFinish(boolean isFinish){ characterFinish = isFinish; }
 
-    public boolean isConditionsMeet(){
-        if (noOfCoins == 0 && characterFinish){
-            return  true;
-        }
-        return false;
+    public void coinReduce(){noOfCoins--;}
+
+    public boolean isConditionsMeet() {
+        return noOfCoins == 0 && characterFinish;
     }
 
 }

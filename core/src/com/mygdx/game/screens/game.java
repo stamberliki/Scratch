@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,15 +16,20 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.JsonValue;
 import com.mygdx.game.character_interface;
+import com.mygdx.game.entity.PopUp;
 import com.mygdx.game.entity.character;
 import com.mygdx.game.entity.coin;
 import com.mygdx.game.entity.conditions;
+import com.mygdx.game.entity.coords;
+import com.mygdx.game.jsonParser;
 import com.mygdx.game.tess_interface;
 
 public class game implements Screen,GestureDetector.GestureListener {
@@ -44,26 +50,41 @@ public class game implements Screen,GestureDetector.GestureListener {
     private float currentZoom,mapCurrentZoom;
     private Rectangle view;
     private com.mygdx.game.entity.conditions conditions;
+    private PopUp errorPopUp;
+    private boolean error;
+    private jsonParser jsonParser;
+    private JsonValue res;
+    private com.mygdx.game.entity.coords coords;
+    private Music bgmusic;
+
+    private Dialog popUp;
 
     private final StringBuilder build = new StringBuilder();
 
-    public game(tess_interface tess,Game game,String mapLevel){
+    public game(tess_interface tess,Game game,Skin skin,int mapLevel){
         this.tess = tess;
         this.game = game;
-        Map = new com.mygdx.game.entity.map(mapLevel+".tmx");
+        Map = new com.mygdx.game.entity.map("level"+mapLevel+".tmx");
         elapsedTime = 0;
         view = new Rectangle();
+        jsonParser = new jsonParser();
+        res = jsonParser.getJson(Integer.toString(mapLevel));
+        coords = new coords(res);
+        this.skin = skin;
     }
 
     @Override
     public void show() {
         batch = new SpriteBatch();
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
         code = new TextArea("",skin);
         stage = new Stage();
-        character = new character(11*16,3*16);
-        coin = new coin[2];
+        character = new character(coords.heroPosition[0]*16,coords.heroPosition[1]*16);
         hero = character;
+
+        coin = new coin[coords.noOfCoin];
+        for (int x = 0 ; x != coords.noOfCoin ; x++){
+            coin[x] = new coin(coords.coinPositions[x][0]*16,coords.coinPositions[x][1]*16);
+        }
 
         pictureBtn = new TextButton("OCR",skin);
         pictureBtn.setBounds(0,0,100,50);
@@ -95,8 +116,16 @@ public class game implements Screen,GestureDetector.GestureListener {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            if (tess.runCode("hero.moveUp();hero.moveRight();hero.moveRight();hero.moveUp();", hero)){
-                                character.isRunning = false;
+                            try {
+                                if (tess.runCode("hero.moveUp);he.moveight);hero.movight();hero.moveU", hero)){
+                                    character.isRunning = false;
+                                }
+                            } catch (Exception e) {
+                                float popUpWidth = Gdx.graphics.getWidth()*0.6f;
+                                float popUpHeight = Gdx.graphics.getHeight()*0.6f;
+                                popUp = new Dialog(e.toString(),skin,"dialog");
+                                popUp.setBounds(Gdx.graphics.getWidth()/2-popUpWidth/2,Gdx.graphics.getHeight()/2-popUpHeight/2,popUpWidth,popUpHeight);
+                                error = true;
                             }
                         }
                     }).start();
@@ -104,20 +133,31 @@ public class game implements Screen,GestureDetector.GestureListener {
             }
         });
 
-        coin[0] = new coin(9*16,10*16);
-        coin[1] = new coin(9*16,11*16);
-
         camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         camera.setToOrtho(false);
-        camera.viewportWidth = Map.getMapWidth()*0.8f;
-        camera.viewportHeight = Map.getMapHeight()*0.8f;
+        float mapAspectRatio = Map.getMapWidth() / Map.getMapHeight();
+        camera.viewportHeight = Map.getMapHeight();
+        camera.viewportWidth = camera.viewportHeight * mapAspectRatio;
         camera.position.set((character.getX() + camera.viewportWidth / 6) + 16, character.getY() + 16, 0);
-        camera.update();
 
-        view.x = camera.position.x-(camera.viewportWidth/2)+16;
-        view.y = camera.position.y-(camera.viewportHeight/2)+16;
-        view.width = camera.viewportWidth;
-        view.height =  camera.viewportHeight;
+        if(res.getBoolean("hasLimitBoundary")){
+            if(res.getBoolean("hasLimitBoundary")){
+                if (res.getInt("limitBoundaryX")*16*currentZoom < Map.getMapWidth() ){
+                    camera.zoom = res.getInt("limitBoundaryX")*16/camera.viewportWidth;
+                    currentZoom = camera.zoom;
+                    Map.getCamera().zoom = currentZoom;
+                    mapCurrentZoom = currentZoom;
+                }
+                if(res.getInt("limitBoundaryY")*16*currentZoom < Map.getMapHeight()){
+                    camera.zoom = res.getInt("limitBoundaryY")*16/camera.viewportHeight;
+                    currentZoom = camera.zoom;
+                    Map.getCamera().zoom = currentZoom;
+                    mapCurrentZoom = currentZoom;
+                }
+            }
+        }
+
+        camera.update();
 
         currentZoom = camera.zoom;
         mapCurrentZoom = Map.getCamera().zoom;
@@ -135,8 +175,8 @@ public class game implements Screen,GestureDetector.GestureListener {
         inputMultiplexer.addProcessor(gd);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        conditions = new conditions(2);
-
+        conditions = new conditions(0);
+//        popUp = new Dialog("Victory",skin,"dialog");
     }
 
     @Override
@@ -144,6 +184,7 @@ public class game implements Screen,GestureDetector.GestureListener {
         Gdx.gl.glClearColor(17, 10, 10, -1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
+
 
 
         if(character.isRunning ) {
@@ -185,6 +226,11 @@ public class game implements Screen,GestureDetector.GestureListener {
         }
 
         character.draw(batch,elapsedTime);
+
+        if (error) {
+            popUp.show(stage);
+            error = false;
+        }
 
         batch.end();
         stage.draw();
@@ -243,26 +289,21 @@ public class game implements Screen,GestureDetector.GestureListener {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        camera.translate(-deltaX,deltaY);
+        camera.translate(-deltaX*currentZoom,deltaY*currentZoom);
         camera.update();
-        Map.getCamera().translate(-deltaX,deltaY);
+        Map.getCamera().translate(-deltaX*currentZoom,deltaY*currentZoom);
         Map.getCamera().update();
+        checkEdgeTouch();
         return false;
     }
 
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
-        currentZoom = camera.zoom;
-        mapCurrentZoom = Map.getCamera().zoom;
         return false;
     }
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        camera.zoom = (initialDistance / distance) * currentZoom;
-        camera.update();
-        Map.getCamera().zoom = (initialDistance / distance) * mapCurrentZoom;
-        Map.getCamera().update();
         return false;
     }
 
@@ -280,15 +321,17 @@ public class game implements Screen,GestureDetector.GestureListener {
         float halfWidth = camera.viewportWidth*camera.zoom/2;
         float halfHeight = camera.viewportHeight*camera.zoom/2;
         float specialRight = camera.viewportWidth*camera.zoom/6;
-        if (camera.viewportWidth*currentZoom > Map.getMapWidth() || camera.viewportHeight*currentZoom > Map.getMapHeight()){
-            camera.zoom = 1;
-            currentZoom = 1;
-            Map.getCamera().zoom = 1;
-            mapCurrentZoom = 1;
+        if(res.getBoolean("hasLimitBoundary")){
+            float boundaryY = ((res.getInt("limitBoundaryY")*16)*camera.zoom)/2;
+            float boundaryX = ((res.getInt("limitBoundaryX")*16)*camera.zoom)/6;
+            if (camera.position.y > boundaryX) camera.position.y = boundaryY;
+            if (camera.position.x+(boundaryX) > res.getInt("limitBoundaryX")*16) camera.position.x = res.getInt("limitBoundaryX")*16-boundaryX;
+        }
+        else{
+            if (camera.position.x+(specialRight) > Map.getMapWidth()) camera.position.x = Map.getMapWidth()- specialRight; //right
+            if (camera.position.y-(halfHeight) < 0) camera.position.y = halfHeight; //below
         }
         if (camera.position.x-(halfWidth) < 0) camera.position.x = halfWidth; //left
-        if (camera.position.x+(specialRight) > Map.getMapWidth()) camera.position.x = Map.getMapWidth()- specialRight; //right
-        if (camera.position.y-(halfHeight) < 0) camera.position.y = halfHeight; //below
         if (camera.position.y+(halfHeight) > Map.getMapHeight()) camera.position.y = Map.getMapHeight() - halfHeight;  //top
         camera.update();
     }

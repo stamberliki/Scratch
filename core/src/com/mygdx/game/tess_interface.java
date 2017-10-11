@@ -6,5 +6,5 @@ public interface tess_interface  {
     ClickListener setGallerySelect();
     void setCodeOCR(String code);
     String getCode();
-    boolean runCode(String code,Object o);
+    boolean runCode(String code,Object o) throws Exception;
 }

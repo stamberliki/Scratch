@@ -1,0 +1,15 @@
+
+ui_skin.png
+size: 758,803
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+play-btn
+  rotate: false
+  xy: 23, 22
+  size: 324,324
+  split: 5, 5, 5, 4
+  pad: 4, 4, 1, 1
+  orig: 324,324
+  offset: 0, 0
+  index: -1

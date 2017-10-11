@@ -1,48 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="27" tilewidth="16" tileheight="16" nextobjectid="9">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="16" tileheight="16" nextobjectid="15">
  <tileset firstgid="1" source="tile4.tsx"/>
  <tileset firstgid="769" source="tile6.tsx"/>
  <tileset firstgid="1793" source="wall.tsx"/>
  <tileset firstgid="2753" source="items.tsx"/>
  <tileset firstgid="3137" source="untitled.tsx"/>
- <layer name="bg" width="30" height="27">
+ <layer name="bg" width="32" height="20">
   <data encoding="base64" compression="zlib">
-   eJztzzERACAQBLEDAY9/k2ABLNB8lWJn69RM1quav0dyRv+7nby8vLy8vLy8vLy8/7/ad4f/
+   eJzjY2Jg4AdiPhrRhMA7RgaG94y0owkBWvl71P+j/h/1/6j/R/0/6v9R/w8t/6/jgWB6+B9mF60wIQAAfxTsUA==
   </data>
  </layer>
- <layer name="path" width="30" height="27">
+ <layer name="Tile Layer 6" width="32" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUDFWgzgfBanhodAwSpxS480GwGx4aGVPLXlLBqL30s3Og7HUfAHsHIpxh+YgYTAu7icHUBs8YcePnjNS3DwbYmHBjdiba2YvPv88GyL9sNPTvKBgFxAAAsngfBw==
+   eJxjYBjZoImdeNyMRCcBcTI75fYvYiceL0aiYe6gFBxiJx4fRqIToWFAKTjMTh5uHCb2K3OQh6llfycjA0MXI+k0zH5K88VKoFmrGEmnF6LlCXLzhRM7cRjkrxR2hP8P4sgfiST6Hz388NEg+2H+fwhkP8aCG6lULqADdP8zAtMgMxbcSKVyER2g+18RT76gh//x5Qta+b+FnXC+oKX/kwnkEWcy8j+xgJR8Qgv/D1cAAFGzi4E=
   </data>
  </layer>
- <layer name="wall1" width="30" height="27">
+ <layer name="Tile Layer 6" width="32" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUUAucY2RgOM9IPH2BcWDc+WGA7BVgoo45ekBz9Jmw03pIfBigp395keylln9HweAEoPjFl8epCd4OUJ4dKHtHwSgYBaMABAD/YBYf
+   eJxjYBhY0MrNwNDGPXD2zwXaPW8A7R8FxIFeZgaGPuaBs38t0O51A2j/UAFDLT8PNfeOgsEJeIFlA98Alg+6QLv1BkH5NJqfhhYAALpzDM0=
   </data>
  </layer>
- <layer name="Tile Layer 6" width="30" height="27">
-  <data encoding="base64" compression="zlib">
-   eJztlM0JwkAQhXfxMLYhdqI2ksRGVr1oF+pJu9BUIjbiHCIsQ7JM5gcUffCYnPL4DvuF8FvZAL/b7NbYBuS7J+D3nN33vjR34LfNbtUxS9OCrOlLd+dTWbW7+xjCIY6/2t0L/uMax1/t7gJ4XWJXYMdLfVC6a7Dj5abudq14ufk0XupvrbdpKO9xwN9ab9NQ3tuAvytn3gd+P3uanHkjunLS0+TMOyt425O35G1r3h3wvG3N2zAc7vF+uR635P1HlxdnP518
-  </data>
- </layer>
- <layer name="Tile Layer 5" width="30" height="27" offsetx="-63.8636" offsety="32.0455">
-  <data encoding="base64" compression="zlib">
-   eJxjYBgFgxn0MjMw9DHT3961QDvXDYC9o4Ay0MrNwNDGTX975wLtnDcA9o4CysBoehkFwwHwAusqvgGor3SBduoNYD05mn9HwUgAAPK1Cls=
-  </data>
- </layer>
- <layer name="Tile Layer 6" width="30" height="27">
-  <data encoding="base64" compression="zlib">
-   eJztzTEBACAMA7D+0w0uQCtI4GJPYiBJj1HJrP/vuudueAEAgHcHOK8Ccw==
-  </data>
- </layer>
- <objectgroup name="Object Layer 1">
+ <objectgroup name="blockObj">
   <object id="1" x="0.125" y="108.75" width="239.375" height="19.25"/>
   <object id="2" x="0" y="160.091" width="191.636" height="15.7273"/>
-  <object id="3" x="224.03" y="123" width="15.6364" height="197.011"/>
-  <object id="4" x="175.75" y="171.938" width="16.125" height="195.813"/>
-  <object id="5" x="190.25" y="352" width="146.75" height="15.75"/>
-  <object id="6" x="235.818" y="309.091" width="99.0909" height="10.9091"/>
-  <object id="7" x="320.196" y="314.5" width="10.5543" height="42.375"/>
+  <object id="3" x="224.03" y="123" width="15.6364" height="100.344"/>
+  <object id="4" x="175.75" y="171.938" width="16.125" height="84.4797"/>
   <object id="8" x="-11.4545" y="125.727" width="11.5455" height="39.9091"/>
+  <object id="11" x="182" y="256.75" width="148.75" height="15.25"/>
+  <object id="12" x="225.75" y="208" width="101.75" height="15.25"/>
+  <object id="13" x="320.75" y="218.75" width="12.25" height="37.5"/>
+ </objectgroup>
+ <objectgroup name="finishBlock">
+  <object id="14" x="288.182" y="224" width="31.8182" height="31.8182"/>
  </objectgroup>
 </map>

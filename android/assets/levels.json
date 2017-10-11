@@ -1,0 +1,22 @@
+{
+  1: {
+    noOfCoin: 2,
+    coinPositions: [[10,9],[10,8]],
+    heroPosition: [
+      11,
+      3
+    ],
+    hasLimitBoundary:false,
+  },
+  2: {
+    noOfCoin: 1,
+    coinPositions: [],
+    heroPosition: [
+      0,
+      10
+    ]
+    hasLimitBoundary:true,
+    limitBoundaryX:23,
+    limitBoundaryY:18,
+  }
+}

@@ -10,26 +10,6 @@
    eJxzZmBgcB7Fo3gUj+JBgNUYGRjU0TAMoIsTi0mx3w2o3h0NwwC6OLF4oMN0FI/iUTyKsWEA25Kk0Q==
   </data>
  </layer>
- <objectgroup name="blockObj">
-  <object id="5" x="65.5" y="129" width="13.3874" height="62"/>
-  <object id="6" x="433.636" y="127.5" width="13.3636" height="62.5"/>
-  <object id="15" x="336" y="96" width="14.7841" height="12.9659"/>
-  <object id="16" x="314.125" y="96.125" width="20.6591" height="34.625"/>
-  <object id="17" x="417.075" y="80.0395" width="14.9249" height="46.4151"/>
-  <object id="18" x="309.75" y="38.75" width="138" height="41"/>
-  <object id="19" x="340.25" y="55.25" width="83.25" height="24.8152"/>
-  <object id="20" x="328.273" y="72.3636" width="17.7273" height="23.6733"/>
-  <object id="21" x="72.8636" y="127.909" width="261.863" height="14.7273"/>
-  <object id="23" x="210.182" y="177.091" width="225.818" height="13.8182"/>
-  <object id="24" x="74.9091" y="177.818" width="98.9091" height="13.0909"/>
-  <object id="25" x="152.909" y="189.091" width="21.0909" height="94.1818"/>
-  <object id="26" x="169.273" y="273.455" width="42.1818" height="13.2727"/>
-  <object id="27" x="210.25" y="179.75" width="22.75" height="99.25"/>
- </objectgroup>
- <objectgroup name="finishBlock">
-  <object id="30" x="398.909" y="96" height="0.181818"/>
-  <object id="32" x="368" y="80" width="32" height="15.8182"/>
- </objectgroup>
  <layer name="block" width="32" height="20">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo2DkAE5mBgYuZvrb2wK1UxNIaw2A/cSAp0B3PWOmnCZkPrnylIKhYj+hcKVV/OACR4F6jjHj5tMa4PI/vQC9/YsO6O1fdDDS/T+cAQADDj28
@@ -75,4 +55,24 @@
    eJxjYBgFAwWUOAbaBaNgFCDAUWYGhmPMA2f+YLEfF02sOmLNGQWjYBSMgoEEAE6DGTs=
   </data>
  </layer>
+ <objectgroup name="blockObj">
+  <object id="5" x="65.5" y="129" width="13.3874" height="62"/>
+  <object id="6" x="433.636" y="127.5" width="13.3636" height="62.5"/>
+  <object id="15" x="336" y="96" width="14.7841" height="12.9659"/>
+  <object id="16" x="314.125" y="96.125" width="20.6591" height="34.625"/>
+  <object id="17" x="417.075" y="80.0395" width="14.9249" height="46.4151"/>
+  <object id="18" x="309.75" y="38.75" width="138" height="41"/>
+  <object id="19" x="340.25" y="55.25" width="83.25" height="24.8152"/>
+  <object id="20" x="328.273" y="72.3636" width="17.7273" height="23.6733"/>
+  <object id="21" x="72.8636" y="127.909" width="261.863" height="14.7273"/>
+  <object id="23" x="210.182" y="177.091" width="225.818" height="13.8182"/>
+  <object id="24" x="74.9091" y="177.818" width="98.9091" height="13.0909"/>
+  <object id="25" x="152.909" y="189.091" width="21.0909" height="94.1818"/>
+  <object id="26" x="169.273" y="273.455" width="42.1818" height="13.2727"/>
+  <object id="27" x="210.25" y="179.75" width="22.75" height="99.25"/>
+ </objectgroup>
+ <objectgroup name="finishBlock">
+  <object id="30" x="398.909" y="96" height="0.181818"/>
+  <object id="32" x="368" y="80" width="32" height="15.8182"/>
+ </objectgroup>
 </map>

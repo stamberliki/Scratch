@@ -77,14 +77,10 @@ public class interface_implement extends AndroidLauncher implements tess_interfa
     public String getCode(){return code;}
 
     @Override
-    public boolean runCode(String code,Object o) {
+    public boolean runCode(String code, Object o)throws Exception{
         interpreter = new Interpreter();
-        try {
-            interpreter.set("hero", o);
-            interpreter.eval(code);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        interpreter.set("hero", o);
+        interpreter.eval(code);
         return true;
     }
 

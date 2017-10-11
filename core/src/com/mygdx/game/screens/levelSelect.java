@@ -26,9 +26,10 @@ public class levelSelect implements Screen {
     private TextButton level1,level2,level3,level4,level5,level6,level7,level8;
     private Table levelTable;
 
-    public levelSelect(tess_interface tess,Game game){
+    public levelSelect(tess_interface tess,Game game,Skin skin){
         this.tess = tess;
         this.game = game;
+        this.skin = skin;
     }
 
     @Override
@@ -44,14 +45,13 @@ public class levelSelect implements Screen {
 //        float thirdColumn = 0;//secondColumn+(buttonWidth*2);
 //        float forthColumn = 0;//thirdColumn+(buttonWidth*2);
         batch = new SpriteBatch();
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         level1 = new TextButton("1",skin);
         level1.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dispose();
-                game.setScreen(new game(tess,game,"level1"));
+                game.setScreen(new game(tess,game,skin,1));
             }
         });
 
@@ -60,7 +60,7 @@ public class levelSelect implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dispose();
-                game.setScreen(new game(tess,game,"level2"));
+                game.setScreen(new game(tess,game,skin,2));
             }
         });
 
@@ -69,7 +69,7 @@ public class levelSelect implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dispose();
-                game.setScreen(new game(tess,game,"level1"));
+                game.setScreen(new game(tess,game,skin,3));
             }
         });
 
@@ -78,7 +78,7 @@ public class levelSelect implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dispose();
-                game.setScreen(new game(tess,game,"level1"));
+                game.setScreen(new game(tess,game,skin,4));
             }
         });
 
@@ -87,7 +87,7 @@ public class levelSelect implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dispose();
-                game.setScreen(new game(tess,game,"level1"));
+                game.setScreen(new game(tess,game,skin,5));
             }
         });
 
@@ -96,7 +96,7 @@ public class levelSelect implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dispose();
-                game.setScreen(new game(tess,game,"level1"));
+                game.setScreen(new game(tess,game,skin,6));
             }
         });
 
@@ -105,7 +105,7 @@ public class levelSelect implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dispose();
-                game.setScreen(new game(tess,game,"level1"));
+                game.setScreen(new game(tess,game,skin,7));
             }
         });
 
@@ -114,7 +114,7 @@ public class levelSelect implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dispose();
-                game.setScreen(new game(tess,game,"level1"));
+                game.setScreen(new game(tess,game,skin,8));
             }
         });
 

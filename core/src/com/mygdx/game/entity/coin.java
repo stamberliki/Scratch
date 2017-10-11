@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 public class coin {
     private Texture coinTexture;
     private Animation<TextureRegion> coinAnimation;
-    private int x,y,prevX,prevY;
+    private int x,y,prevY;
     private float width,height;
     private Rectangle hitBox;
     public boolean isCollide;
@@ -25,7 +25,6 @@ public class coin {
         hitBox.y = y;
         this.x = x;
         this.y = y;
-        prevX = x;
         prevY = y;
         width = 32;
         height = 32;
