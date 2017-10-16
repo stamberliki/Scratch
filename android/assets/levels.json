@@ -9,7 +9,7 @@
     hasLimitBoundary:false,
   },
   2: {
-    noOfCoin: 1,
+    noOfCoin: 0,
     coinPositions: [],
     heroPosition: [
       0,
@@ -17,6 +17,6 @@
     ]
     hasLimitBoundary:true,
     limitBoundaryX:23,
-    limitBoundaryY:18,
+    limitBoundaryY:20,
   }
 }

@@ -31,8 +31,8 @@ public class splash implements Screen {
     public void show() {
         batch = new SpriteBatch();
         stage = new Stage();
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-        skin.getFont("default-font").getData().setScale(1f);
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        skin.getFont("default-font").getData().setScale(Gdx.graphics.getDensity()/1.6f);
 
         splashText = new Label("splash screen \n tap to continue ",skin);
         splashText.setBounds(Gdx.graphics.getWidth()/2-100/2,Gdx.graphics.getHeight()/2-100/2,300,100);
@@ -44,7 +44,6 @@ public class splash implements Screen {
         bgmusic.setLooping(true);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
-//        inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(new InputAdapter(){
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {

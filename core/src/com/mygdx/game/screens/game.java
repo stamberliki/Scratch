@@ -16,7 +16,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -42,13 +41,11 @@ public class game implements Screen,GestureDetector.GestureListener {
     private TextButton pictureBtn,runCode;
     private tess_interface tess;
     private Game game;
-    private float elapsedTime;
+    private float elapsedTime,currentZoom,mapCurrentZoom;
     private com.mygdx.game.entity.map Map;
     private com.mygdx.game.entity.coin[] coin;
     private OrthographicCamera camera;
     private InputMultiplexer inputMultiplexer;
-    private float currentZoom,mapCurrentZoom;
-    private Rectangle view;
     private com.mygdx.game.entity.conditions conditions;
     private PopUp errorPopUp;
     private boolean error;
@@ -56,21 +53,31 @@ public class game implements Screen,GestureDetector.GestureListener {
     private JsonValue res;
     private com.mygdx.game.entity.coords coords;
     private Music bgmusic;
-
-    private Dialog popUp;
+    private int currentLevel;
 
     private final StringBuilder build = new StringBuilder();
 
     public game(tess_interface tess,Game game,Skin skin,int mapLevel){
         this.tess = tess;
         this.game = game;
-        Map = new com.mygdx.game.entity.map("level"+mapLevel+".tmx");
+        this.skin = skin;
+        currentLevel = mapLevel;
+
         elapsedTime = 0;
-        view = new Rectangle();
         jsonParser = new jsonParser();
         res = jsonParser.getJson(Integer.toString(mapLevel));
         coords = new coords(res);
-        this.skin = skin;
+        Map = new com.mygdx.game.entity.map("level"+mapLevel+".tmx");
+    }
+
+    public void newGame(int level){
+        this.dispose();
+        game.setScreen(new game(tess,game,skin,level));
+    }
+
+    public void levelSelect(){
+        this.dispose();
+        game.setScreen(new levelSelect(tess,game,skin));
     }
 
     @Override
@@ -117,14 +124,13 @@ public class game implements Screen,GestureDetector.GestureListener {
                         @Override
                         public void run() {
                             try {
-                                if (tess.runCode("hero.moveUp);he.moveight);hero.movight();hero.moveU", hero)){
+                                if (tess.runCode("hero.moveRight();hero.moveRight();hero.moveDown();hero.moveRight();", hero)){
                                     character.isRunning = false;
                                 }
                             } catch (Exception e) {
                                 float popUpWidth = Gdx.graphics.getWidth()*0.6f;
                                 float popUpHeight = Gdx.graphics.getHeight()*0.6f;
-                                popUp = new Dialog(e.toString(),skin,"dialog");
-                                popUp.setBounds(Gdx.graphics.getWidth()/2-popUpWidth/2,Gdx.graphics.getHeight()/2-popUpHeight/2,popUpWidth,popUpHeight);
+
                                 error = true;
                             }
                         }
@@ -169,6 +175,8 @@ public class game implements Screen,GestureDetector.GestureListener {
         stage.addActor(pictureBtn);
         stage.addActor(runCode);
 
+        errorPopUp = new PopUp(camera,stage,this,currentLevel);
+
         GestureDetector gd = new GestureDetector(this);
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
@@ -176,7 +184,6 @@ public class game implements Screen,GestureDetector.GestureListener {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         conditions = new conditions(0);
-//        popUp = new Dialog("Victory",skin,"dialog");
     }
 
     @Override
@@ -227,13 +234,20 @@ public class game implements Screen,GestureDetector.GestureListener {
 
         character.draw(batch,elapsedTime);
 
+        batch.end();
+
+        stage.draw();
+
+       batch.begin();
+
         if (error) {
-            popUp.show(stage);
+            errorPopUp.show(batch,camera,0,"");
             error = false;
         }
-
+        if (conditions.isConditionsMeet()){
+            errorPopUp.show(batch,camera,1,"");
+        }
         batch.end();
-        stage.draw();
 
     }
 

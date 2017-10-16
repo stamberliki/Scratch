@@ -22,12 +22,12 @@
  </layer>
  <objectgroup name="blockObj">
   <object id="1" x="0.125" y="108.75" width="239.375" height="19.25"/>
-  <object id="2" x="0" y="160.091" width="191.636" height="15.7273"/>
-  <object id="3" x="224.03" y="123" width="15.6364" height="100.344"/>
-  <object id="4" x="175.75" y="171.938" width="16.125" height="84.4797"/>
-  <object id="8" x="-11.4545" y="125.727" width="11.5455" height="39.9091"/>
-  <object id="11" x="182" y="256.75" width="148.75" height="15.25"/>
-  <object id="12" x="225.75" y="208" width="101.75" height="15.25"/>
+  <object id="2" x="0" y="161.879" width="191.636" height="13.9394"/>
+  <object id="3" x="225.808" y="123" width="13.858" height="100.344"/>
+  <object id="4" x="175.75" y="171.938" width="14.0625" height="84.4797"/>
+  <object id="8" x="-11.4545" y="125.727" width="8.72732" height="39.9091"/>
+  <object id="11" x="182" y="258.568" width="148.75" height="13.4318"/>
+  <object id="12" x="225.75" y="208" width="101.75" height="13.4318"/>
   <object id="13" x="320.75" y="218.75" width="12.25" height="37.5"/>
  </objectgroup>
  <objectgroup name="finishBlock">

@@ -24,7 +24,6 @@ public class levelSelect implements Screen {
     private Game game;
     private Stage stage;
     private TextButton level1,level2,level3,level4,level5,level6,level7,level8;
-    private Table levelTable;
 
     public levelSelect(tess_interface tess,Game game,Skin skin){
         this.tess = tess;
@@ -38,12 +37,6 @@ public class levelSelect implements Screen {
         float screenHeight = Gdx.graphics.getHeight();
         float buttonHeight = screenHeight*0.15f;
         float buttonWidth = screenWidth*0.8f;
-//        float firstRow = 0;//(screenHeight/2)+(buttonHeight*0.50f);
-//        float secondRow = 0;//(screenHeight/2)-(buttonHeight*1.50f);
-//        float firstColumn = 0;//(screenWidth/2)-(buttonWidth*3.5f);
-//        float secondColumn = 0;//firstColumn+(buttonWidth*2);
-//        float thirdColumn = 0;//secondColumn+(buttonWidth*2);
-//        float forthColumn = 0;//thirdColumn+(buttonWidth*2);
         batch = new SpriteBatch();
 
         level1 = new TextButton("1",skin);
@@ -118,10 +111,6 @@ public class levelSelect implements Screen {
             }
         });
 
-        levelTable = new Table();
-        levelTable.setBounds(0,0,screenWidth,buttonHeight*8*1.05f);
-        Table scrollTable = new Table();
-        scrollTable.setBounds(0,0,screenWidth,screenHeight);
         ArrayList<Button> buttonList = new ArrayList<Button>();
         buttonList.add(level1);
         buttonList.add(level2);
@@ -132,15 +121,18 @@ public class levelSelect implements Screen {
         buttonList.add(level7);
         buttonList.add(level8);
 
+        Table scrollTable = new Table();
         for (Button list : buttonList) {
+            Table levelTable = new Table();
             levelTable.row();
-            levelTable.add(list).expand().fill().pad(screenHeight*0.05f,0,0,0);
+            levelTable.add(list).expand().fill().pad(screenHeight*0.08f,0,screenHeight*0.02f,0);
+            scrollTable.row();
+            scrollTable.add(levelTable).expandX().fillX();
         }
 
-        scrollTable.add(levelTable).expand().fill();
-
         ScrollPane scrollPane = new ScrollPane(scrollTable);
-        scrollPane.setBounds(0,0,screenWidth,scrollTable.getHeight());
+        scrollPane.setBounds(0,0,screenWidth,screenHeight);
+        scrollPane.setFlingTime(0.1f);
 
         stage = new Stage();
         stage.addActor(scrollPane);
@@ -154,6 +146,7 @@ public class levelSelect implements Screen {
 
         batch.begin();
 
+        stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
 
         batch.end();

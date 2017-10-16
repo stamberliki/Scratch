@@ -1,6 +1,7 @@
 package com.mygdx.game.entity;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,19 +17,17 @@ public class buttonUI {
 
     public buttonUI(Texture texture, float x, float y,float width, float height){
         skin = new Sprite(texture);
-        skin.setBounds(x,y,width,height);
+        skin.setPosition(x,y);
+        skin.setSize(width,height);
     }
 
     public void update(SpriteBatch batch, float x, float y){
-        event(x,y);
         skin.draw(batch);
     }
 
-    private boolean event(float x, float y){
-        if (x > skin.getX() && x < skin.getX()+skin.getHeight()){
-            if (y > skin.getY() && y > skin.getX()+skin.getHeight()){
-                return true;
-            }
+    public boolean event(float x, float y){
+        if (skin.getBoundingRectangle().contains(x,y+(skin.getHeight()*2)+(skin.getY()/2)-Gdx.graphics.getHeight())){
+            return true;
         }
         return false;
     }

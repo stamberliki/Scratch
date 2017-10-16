@@ -35,14 +35,14 @@ public class character implements character_interface {
         leftIdleAnimation = new Animation<TextureRegion>(1,tmp[1][4]);
         rightIdleAnimation = new Animation<TextureRegion>(1,tmp[2][4]);
         state = downIdleAnimation;
-        hitBox = new Rectangle(0,0,30,14);
-        hitBox.x = this.x;
-        hitBox.y = this.y;
 
         this.width = 32;
         this.height = 32;
         this.x = x;
         this.y = y;
+
+        hitBox = new Rectangle(x,y,28,12);
+
         this.steps = 32*3;
         nextX = x;
         nextY = y;
