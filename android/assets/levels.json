@@ -1,11 +1,12 @@
 {
   1: {
-    noOfCoin: 2,
-    coinPositions: [[10,9],[10,8]],
+    noOfCoin: 0,
+    coinPositions: [],
     heroPosition: [
       11,
       3
     ],
+    audio:"Castle2.mp3",
     hasLimitBoundary:false,
   },
   2: {
@@ -14,7 +15,8 @@
     heroPosition: [
       0,
       10
-    ]
+    ],
+    audio:"Castle2.mp3",
     hasLimitBoundary:true,
     limitBoundaryX:23,
     limitBoundaryY:20,

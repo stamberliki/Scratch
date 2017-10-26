@@ -1,29 +1,22 @@
 package com.mygdx.game.entity;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.screens.game;
 
 public class PopUp {
-    private Sprite show;
     private Texture closeTexture,nextTexture,levelTexture,bgTexture;
     private ImageButton close,nextLevel,levelSelect;
-    private ShapeRenderer shapeRenderer;
-    private Camera camera;
-    private game game;
     private int currentLevel;
+    private Stage stage;
 
     private float aspectRatio;
     private float bgWidth;
@@ -32,18 +25,24 @@ public class PopUp {
     private float bgY;
     private float buttonWidth;
     private float buttonHeight;
+    private float halfWidth;
+    private float halfHeight;
 
-    public PopUp(Camera camera, Stage stage, final game game, int level){
+    public PopUp(final game game, int level){
         currentLevel = level;
-        this.game = game;
+        aspectRatio = Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
+        halfWidth = Gdx.graphics.getWidth()/2;
+        halfHeight = Gdx.graphics.getHeight()/2;
+        buttonWidth = Gdx.graphics.getWidth()*0.1f;
+        buttonHeight = buttonWidth*aspectRatio;
 //        closeTexture = new Texture(Gdx.files.internal(""));
         nextTexture = new Texture(Gdx.files.internal("ui/BUTTON-NEXT.png"));
         levelTexture = new Texture(Gdx.files.internal("ui/BUTTON-LEVEL.png"));
         bgTexture = new Texture(Gdx.files.internal("ui/VICTORY PROMT.png"));
-//        shapeRenderer = new ShapeRenderer();
-//        shapeRenderer.rect(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        stage = new Stage();
 
         nextLevel = new ImageButton(new TextureRegionDrawable(new TextureRegion(nextTexture)));
+        nextLevel.setBounds(halfWidth+(buttonWidth*0.2f),Gdx.graphics.getHeight()*0.2f-(buttonHeight),buttonWidth,buttonHeight);
         nextLevel.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -57,6 +56,7 @@ public class PopUp {
         });
 
         levelSelect = new ImageButton(new TextureRegionDrawable(new TextureRegion(levelTexture)));
+        levelSelect.setBounds(halfWidth-(buttonWidth*1.2f),Gdx.graphics.getHeight()*0.2f-(buttonHeight),buttonWidth,buttonHeight);
         levelSelect.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -76,21 +76,18 @@ public class PopUp {
     }
 
     public void show(SpriteBatch batch,Camera camera,int stat,String s){
-        aspectRatio = Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         bgWidth = camera.viewportWidth*0.6f;
         bgHeight =  camera.viewportHeight*0.6f;
         bgX = camera.position.x-(camera.viewportWidth*0.3f);
         bgY = camera.position.y-(camera.viewportHeight*0.3f);
-        buttonWidth = bgWidth*0.3f;
-        buttonHeight = buttonWidth*aspectRatio;
 
         if (stat == 1) {
+            batch.draw(bgTexture, bgX, bgY, bgWidth, bgHeight);
             nextLevel.setVisible(true);
             levelSelect.setVisible(true);
-            levelSelect.setBounds(bgX+(bgWidth/2)-(buttonWidth/2),bgY-(buttonHeight/2),buttonWidth,buttonHeight);
-            nextLevel.setBounds(bgX+(bgWidth/2)+(buttonWidth*1.5f),bgY-(buttonHeight/2),buttonWidth,buttonHeight);
-            batch.draw(bgTexture, bgX, bgY, bgWidth, bgHeight);
         }
     }
+
+    public Stage getStage(){return stage;}
 
 }

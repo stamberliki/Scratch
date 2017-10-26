@@ -1,28 +1,26 @@
 package com.mygdx.game.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Timer;
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.tess_interface;
 
 public class splash implements Screen {
     SpriteBatch batch;
-    Skin skin;
     Stage stage;
-    Label splashText;
     private tess_interface tess;
-    private Game game;
+    private MyGdxGame game;
     private Music bgmusic;
+    private Texture splashScreen;
+    private com.mygdx.game.audioManager audioManager;
 
-    public splash(tess_interface tess, Game game){
+    public splash(tess_interface tess, MyGdxGame game){
         this.tess = tess;
         this.game = game;
     }
@@ -31,37 +29,35 @@ public class splash implements Screen {
     public void show() {
         batch = new SpriteBatch();
         stage = new Stage();
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        skin.getFont("default-font").getData().setScale(Gdx.graphics.getDensity()/1.6f);
+        bgmusic = Gdx.audio.newMusic(Gdx.files.internal("audio/Sheep sound.mp3"));
 
-        splashText = new Label("splash screen \n tap to continue ",skin);
-        splashText.setBounds(Gdx.graphics.getWidth()/2-100/2,Gdx.graphics.getHeight()/2-100/2,300,100);
+        splashScreen = new Texture(Gdx.files.internal("SPLASH SCREEN.png"));
 
-        stage.addActor(splashText);
-
-        bgmusic = Gdx.audio.newMusic(Gdx.files.internal("audio/menu.ogg"));
-        bgmusic.play();
-        bgmusic.setLooping(true);
-
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(new InputAdapter(){
+        Timer.schedule(new Timer.Task() {
             @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                game.setScreen(new mainMenu(tess,game,skin));
-                return true;
+            public void run() {
+                bgmusic.play();
             }
-        });
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        },2);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                game.setScreen(new mainMenu(tess,game));
+            }
+        },4);
+
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(179/255f,141/255f,36/255f,8);
+        float splashWidth = Gdx.graphics.getWidth()*0.3f;
+        float splashHeight = Gdx.graphics.getHeight()*0.3f;
+        Gdx.gl.glClearColor(164/255f,164/255f,164/255f,0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
 
-        stage.draw();
+        batch.draw(splashScreen,Gdx.graphics.getWidth()/2-(splashWidth/2),Gdx.graphics.getHeight()/2-(splashHeight/2),splashWidth,splashHeight);
 
         batch.end();
     }
@@ -89,8 +85,8 @@ public class splash implements Screen {
     @Override
     public void dispose() {
         this.batch.dispose();
-        Gdx.input.setInputProcessor(null);
         this.stage.dispose();
+        this.bgmusic.dispose();
     }
 
 }

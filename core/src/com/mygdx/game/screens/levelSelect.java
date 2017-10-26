@@ -4,15 +4,20 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.tess_interface;
 
 import java.util.ArrayList;
@@ -21,105 +26,63 @@ public class levelSelect implements Screen {
     private SpriteBatch batch;
     private Skin skin;
     private tess_interface tess;
-    private Game game;
+    private MyGdxGame game;
     private Stage stage;
-    private TextButton level1,level2,level3,level4,level5,level6,level7,level8;
+    private TextButton levelButton;
+    private ArrayList<Button> buttonList;
+    private Texture backTexture;
+    private ImageButton backBtn;
+    private Screen prevScreen,thisScreen;
 
-    public levelSelect(tess_interface tess,Game game,Skin skin){
+    private float backWidth = Gdx.graphics.getWidth()*0.1f;
+    private float backHeight = Gdx.graphics.getHeight()*0.1f;
+    private float backX = Gdx.graphics.getWidth()*0.03f;
+    private float backY = Gdx.graphics.getHeight()*0.95f-backHeight;
+
+    public levelSelect(tess_interface tess,MyGdxGame game,Screen prevScreen){
         this.tess = tess;
         this.game = game;
-        this.skin = skin;
+        this.prevScreen = prevScreen;
+    }
+
+    public levelSelect(tess_interface tess,MyGdxGame game){
+        this.tess = tess;
+        this.game = game;
     }
 
     @Override
     public void show() {
+        thisScreen = this;
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
-        float buttonHeight = screenHeight*0.15f;
-        float buttonWidth = screenWidth*0.8f;
         batch = new SpriteBatch();
+        buttonList = new ArrayList<Button>();
+        skin = game.getSkin();
 
-        level1 = new TextButton("1",skin);
-        level1.addListener(new ClickListener(){
+        backTexture = new Texture(Gdx.files.internal("ui/BUTTON-PLAY.png"));
+
+        backBtn = new ImageButton(new TextureRegionDrawable(new TextureRegion(backTexture)));
+        backBtn.setBounds(backX,backY,backWidth,backHeight);
+        backBtn.addListener(new ClickListener(){
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                game.setScreen(new game(tess,game,skin,1));
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(prevScreen);
             }
         });
 
-        level2 = new TextButton("2",skin);
-        level2.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                game.setScreen(new game(tess,game,skin,2));
-            }
-        });
-
-        level3 = new TextButton("3",skin);
-        level3.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                game.setScreen(new game(tess,game,skin,3));
-            }
-        });
-
-        level4 = new TextButton("4",skin);
-        level4.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                game.setScreen(new game(tess,game,skin,4));
-            }
-        });
-
-        level5 = new TextButton("5",skin);
-        level5.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                game.setScreen(new game(tess,game,skin,5));
-            }
-        });
-
-        level6 = new TextButton("6",skin);
-        level6.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                game.setScreen(new game(tess,game,skin,6));
-            }
-        });
-
-        level7 = new TextButton("7",skin);
-        level7.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                game.setScreen(new game(tess,game,skin,7));
-            }
-        });
-
-        level8 = new TextButton("8",skin);
-        level8.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dispose();
-                game.setScreen(new game(tess,game,skin,8));
-            }
-        });
-
-        ArrayList<Button> buttonList = new ArrayList<Button>();
-        buttonList.add(level1);
-        buttonList.add(level2);
-        buttonList.add(level3);
-        buttonList.add(level4);
-        buttonList.add(level5);
-        buttonList.add(level6);
-        buttonList.add(level7);
-        buttonList.add(level8);
+        for (int level = 0 ; level != 8 ; level++){
+            final int finalLevel = level;
+            levelButton = new TextButton(Integer.toString(level+1),skin);
+            levelButton.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.getAudioManager().getMenuMusic().pause();
+                    dispose();
+                    game.setScreen(new game(tess,game,thisScreen,finalLevel+1));
+                }
+            });
+            buttonList.add(levelButton);
+        }
 
         Table scrollTable = new Table();
         for (Button list : buttonList) {
@@ -131,17 +94,18 @@ public class levelSelect implements Screen {
         }
 
         ScrollPane scrollPane = new ScrollPane(scrollTable);
-        scrollPane.setBounds(0,0,screenWidth,screenHeight);
+        scrollPane.setBounds(screenWidth*0.2f,0,screenWidth*0.6f,screenHeight*0.7f);
         scrollPane.setFlingTime(0.1f);
 
         stage = new Stage();
         stage.addActor(scrollPane);
+        stage.addActor(backBtn);
         Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(17, 10, 10, -1);
+        Gdx.gl.glClearColor(179/255f,141/255f,36/255f,8);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();

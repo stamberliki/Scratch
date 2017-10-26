@@ -9,4 +9,5 @@ public interface character_interface {
     void moveDown();
     void moveRight();
     void moveLeft();
+    void attack(String name);
 }

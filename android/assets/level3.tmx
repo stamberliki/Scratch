@@ -12,17 +12,12 @@
  </layer>
  <layer name="Tile Layer 2" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJztz7cNgEAUg+Hrj4awCGENwiKEVQmLEAbA5WupTof+T7Lc2s4BAAAAAAAAQBird24z2ZXDh1713anNl3KbfiL8kSb/+ZEpuekiCb3qu1KbK6U23UT4o9XmTulNDxH+GLV5UmbTS4Q/AAAAAODvXqCQF2A=
+   eJzt1kkKgDAMheE47NpLONz/Dlov4nAQAyq6qZsiNvB/ELJN+ghUBAAAAACAb41OJGhN7u9J0iw6/6q1Gd+j9CKVt7/HlUft/54kDXnkhTzyQh55ufKwvoelPAZ3/KOeFc57sHQfs7vfPdYt5FH4+91j3UIejc7ZanUvvTeQBwAAAADE7GTxJKw=
   </data>
  </layer>
  <layer name="Tile Layer 3" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt08ENgzAMhWGLcounKGwCk7SdpGwGTAIdpI4EyoULp8TR/0mWc3xPBhEAAAAAAOo3B5ElpB1nDblT3bdZ5v2Y8/1z2KNRkccx55se+fBdlYV7lOXqHq3mTnXf1T089qj5/+Ae+dRyj6dl7jTtOL3DHi/L/Na0B5vRYY+vZZ407djl47AHAAAA4NEfjigx3Q==
-  </data>
- </layer>
- <layer name="Tile Layer 4" width="50" height="50">
-  <data encoding="base64" compression="zlib">
-   eJzt1csNglAQBdBJYMULNKB9SRfSKnSiia6dGvjkCTknuft7M4uJAAAAAM5mziy1S+zglXnXLgF/quki2q52i+1uueF+gR1X8clbfE98j0eJGDN9Zii126z3zO5T8c8BAADgCD9MgQtd
+   eJztzrENACAIAEF63QT3n08msJLQ3CXffwQAAAAAAECfVe3piQ+yOtMTAAAAPF0fSgBv
   </data>
  </layer>
 </map>
