@@ -1,20 +1,29 @@
 package com.mygdx.game.entity;
 
 public class conditions {
-    private int noOfCoins;
-    private boolean characterFinish;
+    public int noOfCoins;
+    public int noOfEnemies;
+    public boolean characterFinish,characterDead;
 
-    public conditions(int noOfCoins){
-        this.noOfCoins = noOfCoins;
+    public conditions(gameData gameData){
+        this.noOfCoins = gameData.noOfCoin;
+        this.noOfEnemies = gameData.noOfEnemy;
         characterFinish = false;
+        characterDead = false;
     }
 
     public void setCharacterFinish(boolean isFinish){ characterFinish = isFinish; }
 
-    public void coinReduce(){noOfCoins--;}
+    public void setCharacterDead(boolean isDead){characterDead = isDead;}
+
+    public void coinReduce(){noOfCoins-=1;}
+
+    public void enemyReduce(){noOfEnemies-=1;}
 
     public boolean isConditionsMeet() {
-        return noOfCoins == 0 && characterFinish;
+        return noOfCoins == 0 && characterFinish && noOfEnemies == 0;
     }
+
+    public boolean isCharacterDead(){return characterDead;}
 
 }

@@ -35,7 +35,7 @@ public class options implements Screen{
     public void show() {
         stage = new Stage();
         batch = new SpriteBatch();
-        backTexture = new Texture(Gdx.files.internal("ui/BUTTON-PLAY.png"));
+        backTexture = new Texture(Gdx.files.internal("ui/BUTTON-BACK.png"));
 
         backBtn = new ImageButton(new TextureRegionDrawable(new TextureRegion(backTexture)));
         backBtn.setBounds(backX,backY,backWidth,backHeight);

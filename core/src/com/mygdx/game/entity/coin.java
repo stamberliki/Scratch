@@ -31,6 +31,15 @@ public class coin {
         isCollide = false;
     }
 
+    public void reInitialize(int x, int y){
+        hitBox = new Rectangle(0,0,32,32);
+        hitBox.x = x;
+        hitBox.y = y;
+        this.x = x;
+        this.y = y;
+        isCollide = false;
+    }
+
     public Rectangle getHitBox(){return hitBox;}
 
     public void draw(SpriteBatch batch,float time){

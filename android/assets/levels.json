@@ -2,23 +2,36 @@
   1: {
     noOfCoin: 0,
     coinPositions: [],
-    heroPosition: [
-      11,
-      3
-    ],
+    heroPosition: [11, 3],
+    noOfEnemy: 0,
+    enemyPositions:[],
+    enemyNames:[],
     audio:"Castle2.mp3",
     hasLimitBoundary:false,
+    hasTiledAnimation:false,
   },
   2: {
     noOfCoin: 0,
     coinPositions: [],
-    heroPosition: [
-      0,
-      10
-    ],
+    heroPosition: [0, 10],
+    noOfEnemy: 0,
+    enemyPositions:[],
+    enemyNames:[],
     audio:"Castle2.mp3",
     hasLimitBoundary:true,
+    hasTiledAnimation:true,
     limitBoundaryX:23,
     limitBoundaryY:20,
+  },
+  3: {
+    noOfCoin: 1,
+    coinPositions: [[17,12],],
+    heroPosition: [11, 2],
+    noOfEnemy: 1,
+    enemyPositions:[[17,10],],
+    enemyNames:["enemy1",],
+    audio:"Castle2.mp3",
+    hasLimitBoundary:false,
+    hasTiledAnimation:true,
   }
 }

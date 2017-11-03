@@ -1,0 +1,14 @@
+{
+  1: {
+    name: "stage 1",
+    description: "stage 1",
+  },
+  2: {
+    name: "stage 2",
+    description: "stage 2",
+  },
+  3: {
+    name: "stage 3",
+    description: "stage 3",
+  }
+}

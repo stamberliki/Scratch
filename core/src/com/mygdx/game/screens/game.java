@@ -7,12 +7,16 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.TextureMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -32,6 +36,7 @@ import com.mygdx.game.entity.PopUp;
 import com.mygdx.game.entity.character;
 import com.mygdx.game.entity.coin;
 import com.mygdx.game.entity.conditions;
+import com.mygdx.game.entity.enemy;
 import com.mygdx.game.entity.gameData;
 import com.mygdx.game.jsonParser;
 import com.mygdx.game.tess_interface;
@@ -53,7 +58,7 @@ public class game implements Screen,GestureDetector.GestureListener {
     private InputMultiplexer inputMultiplexer;
     private com.mygdx.game.entity.conditions conditions;
     private PopUp popUp;
-    private boolean error;
+    private boolean error,isAlreadyRunning;
     private jsonParser jsonParser;
     private JsonValue res;
     private gameData gameData;
@@ -63,6 +68,7 @@ public class game implements Screen,GestureDetector.GestureListener {
     private Screen prevScreen;
     private ImageButton backBtn;
     private Texture backTexture;
+    private com.mygdx.game.entity.enemy[] enemy;
 
     private final StringBuilder build = new StringBuilder();
     private float aspectRatio = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
@@ -79,11 +85,19 @@ public class game implements Screen,GestureDetector.GestureListener {
         this.prevScreen = prevScreen;
         currentLevel = mapLevel;
         skin = game.getSkin();
-        elapsedTime = 0;
-        jsonParser = new jsonParser();
+        jsonParser = new jsonParser("levels.json");
         res = jsonParser.getJson(Integer.toString(mapLevel));
-        gameData = new gameData(res);
         Map = new com.mygdx.game.entity.map("level"+mapLevel+".tmx");
+    }
+
+    public void reInitialize(){
+        character.reInitialize(gameData.heroPosition[0]*16,gameData.heroPosition[1]*16);
+        for (int x = 0; x != gameData.noOfCoin ; x++){
+            coin[x].reInitialize(gameData.coinPositions[x][0]*16, gameData.coinPositions[x][1]*16);
+        }
+        for (int x = 0; x != gameData.noOfEnemy ; x++){
+            enemy[x].reInitialize(gameData.enemyPositions[x][0]*16, gameData.enemyPositions[x][1]*16);
+        }
     }
 
     public void newGame(int level){
@@ -102,14 +116,17 @@ public class game implements Screen,GestureDetector.GestureListener {
         batch = new SpriteBatch();
         code = new TextArea("",skin);
         stage = new Stage();
+        elapsedTime = 0;
+        gameData = new gameData(res);
         character = new character(gameData.heroPosition[0]*16, gameData.heroPosition[1]*16);
         hero = character;
+        isAlreadyRunning = false;
 
         game.getAudioManager().setGameMusic(gameData.musicName);
         game.getAudioManager().getGameMusic().setLooping(true);
         game.getAudioManager().getGameMusic().play();
 
-        backTexture = new Texture(Gdx.files.internal("ui/BUTTON-PLAY.png"));
+        backTexture = new Texture(Gdx.files.internal("ui/BUTTON-BACK.png"));
 
         backBtn = new ImageButton(new TextureRegionDrawable(new TextureRegion(backTexture)));
         backBtn.setBounds(backX,backY,backWidth,backHeight);
@@ -125,6 +142,11 @@ public class game implements Screen,GestureDetector.GestureListener {
         coin = new coin[gameData.noOfCoin];
         for (int x = 0; x != gameData.noOfCoin ; x++){
             coin[x] = new coin(gameData.coinPositions[x][0]*16, gameData.coinPositions[x][1]*16);
+        }
+
+        enemy = new enemy[gameData.noOfEnemy];
+        for (int x = 0; x != gameData.noOfEnemy ; x++){
+            enemy[x] = new enemy(gameData.enemyPositions[x][0]*16, gameData.enemyPositions[x][1]*16,0,9,"down",gameData.enemyNames[x],skin);
         }
 
         pictureBtn = new TextButton("OCR",skin);
@@ -152,20 +174,23 @@ public class game implements Screen,GestureDetector.GestureListener {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (!character.isRunning) {
-                    character.isRunning=true;
+                if (!character.isRunning){
+                    character.isRunning = true;
+                    if(isAlreadyRunning)
+                        reInitialize();
+                    isAlreadyRunning = true;
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                if (tess.runCode(code.getText(), hero)){
+                                if (tess.runCode("hero.moveRight();hero.moveUp();hero.attack(\"etetew\");hero.moveUp();", hero)){  //run code
                                     character.isRunning = false;
                                 }
                             } catch (Exception e) {
                                 float popUpWidth = Gdx.graphics.getWidth()*0.6f;
                                 float popUpHeight = Gdx.graphics.getHeight()*0.6f;
                                 Gdx.app.log("",e.toString());
-//                                error = true;
+    //                                error = true;
                             }
                         }
                     }).start();
@@ -217,7 +242,7 @@ public class game implements Screen,GestureDetector.GestureListener {
         inputMultiplexer.addProcessor(gd);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        conditions = new conditions(0);
+        conditions = new conditions(gameData);
     }
 
     @Override
@@ -234,6 +259,12 @@ public class game implements Screen,GestureDetector.GestureListener {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
+        if (gameData.hasTiledAnimation)
+        if ((int)elapsedTime%2>0)
+            Map.getMap().getLayers().get("animation").setVisible(false);
+        else
+            Map.getMap().getLayers().get("animation").setVisible(true);
+
         Map.setX(camera.position.x);
         Map.setY(camera.position.y);
 
@@ -241,13 +272,29 @@ public class game implements Screen,GestureDetector.GestureListener {
 
         batch.begin();
 
+        // Gem
         for (com.mygdx.game.entity.coin coinLocation : coin){
-            if (Intersector.overlaps(coinLocation.getHitBox(),character.getHitBox())){
+            if (Intersector.overlaps(coinLocation.getHitBox(),character.getHitBox()) && !coinLocation.isCollide ){
                 coinLocation.isCollide = true;
+                conditions.coinReduce();
             }
             coinLocation.draw(batch,elapsedTime);
         }
 
+        // Enemy
+        for (com.mygdx.game.entity.enemy enemyLocation : enemy){
+            if (Intersector.overlaps(enemyLocation.getAttackHitBox(),character.getHitBox()) && !enemyLocation.dead){
+                character.dead = true;
+                conditions.setCharacterDead(true);
+            }
+            if (Intersector.overlaps(enemyLocation.getHitBox(),character.getAttackHitBox()) && !enemyLocation.dead && character.attack){
+                enemyLocation.dead = true;
+                conditions.enemyReduce();
+            }
+            enemyLocation.draw(batch,elapsedTime);
+        }
+
+        //Blocked by obstacles
         MapObjects objects = Map.getMap().getLayers().get("blockObj").getObjects();
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
             Rectangle rectangle = rectangleObject.getRectangle();
@@ -270,13 +317,20 @@ public class game implements Screen,GestureDetector.GestureListener {
 
         stage.draw();
 
+        Gdx.app.log("",conditions.characterFinish+" | "+conditions.noOfEnemies+" | "+conditions.noOfCoins+" | "+conditions.isConditionsMeet());
         if (error) {
             batch.begin();
             popUp.show(batch,camera,0,"");
             error = false;
             batch.end();
         }
+        if (conditions.isCharacterDead()){
+            batch.begin();
+            popUp.show(batch,camera,0,"Your character is dead.");
+            batch.end();
+        }
         if (conditions.isConditionsMeet()){
+            Gdx.input.setInputProcessor(popUp.getStage());
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -320,6 +374,7 @@ public class game implements Screen,GestureDetector.GestureListener {
     public void dispose() {
         this.batch.dispose();
         this.stage.dispose();
+        Map.getMap().dispose();
     }
 
     @Override

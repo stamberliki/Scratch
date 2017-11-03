@@ -15,7 +15,12 @@
    eJxjYBjZoImdeNyMRCcBcTI75fYvYiceL0aiYe6gFBxiJx4fRqIToWFAKTjMTh5uHCb2K3OQh6llfycjA0MXI+k0zH5K88VKoFmrGEmnF6LlCXLzhRM7cRjkrxR2hP8P4sgfiST6Hz388NEg+2H+fwhkP8aCG6lULqADdP8zAtMgMxbcSKVyER2g+18RT76gh//x5Qta+b+FnXC+oKX/kwnkEWcy8j+xgJR8Qgv/D1cAAFGzi4E=
   </data>
  </layer>
- <layer name="Tile Layer 6" width="32" height="20">
+ <layer name="Tile Layer 4" width="32" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBhY0MjNwNDEPXD2zwTaPWsA7R8FxIFeZgaGPuaBs38t0O51A2j/UAFDLT8PNfeOgsEJeIFlA98Alg+6QLv1BkH5NJqfhhYAAGzkDI0=
+  </data>
+ </layer>
+ <layer name="animation" width="32" height="20" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYBhY0MrNwNDGPXD2zwXaPW8A7R8FxIFeZgaGPuaBs38t0O51A2j/UAFDLT8PNfeOgsEJeIFlA98Alg+6QLv1BkH5NJqfhhYAALpzDM0=
   </data>

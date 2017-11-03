@@ -8,8 +8,8 @@ public class jsonParser {
     private JsonValue res;
 
 
-    public jsonParser(){
-        res = new JsonReader().parse(Gdx.files.internal("levels.json"));
+    public jsonParser(String file){
+        res = new JsonReader().parse(Gdx.files.internal(file));
     }
 
     public JsonValue getJson(String level){
