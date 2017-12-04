@@ -8,21 +8,23 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.screens.game;
 
 public class PopUp {
-    private Texture closeTexture,nextTexture,levelTexture,bgTexture;
-    private ImageButton close,nextLevel,levelSelect;
+    private Texture closeTexture,nextTexture,levelTexture, victoryTexture, errorTexture;
+    private ImageButton errorButton,nextLevel,levelSelect;
+    private Label errorText;
     private int currentLevel;
     private Stage stage;
 
     private float aspectRatio;
-    private float bgWidth;
-    private float bgHeight;
-    private float bgX;
-    private float bgY;
+    private float victoryWidth;
+    private float victoryHeight;
+    private float victoryX;
+    private float victoryY;
     private float buttonWidth;
     private float buttonHeight;
     private float halfWidth;
@@ -38,8 +40,16 @@ public class PopUp {
 //        closeTexture = new Texture(Gdx.files.internal(""));
         nextTexture = new Texture(Gdx.files.internal("ui/BUTTON-NEXT.png"));
         levelTexture = new Texture(Gdx.files.internal("ui/BUTTON-LEVEL.png"));
-        bgTexture = new Texture(Gdx.files.internal("ui/VICTORY PROMT.png"));
+        victoryTexture = new Texture(Gdx.files.internal("ui/VICTORY PROMT.png"));
+        errorTexture = new Texture(Gdx.files.internal("ui/error.png"));
         stage = new Stage();
+
+        errorButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(errorTexture)));
+        errorButton.setBounds(Gdx.graphics.getWidth()*0.05f, Gdx.graphics.getHeight()*0.1f,halfWidth,halfHeight);
+
+        errorText = new Label(null,game.getSkin());
+        errorText.setBounds(Gdx.graphics.getWidth()*0.1f, Gdx.graphics.getHeight()*0.1f,halfWidth/2,halfHeight/2); //to be fix
+        errorText.setWrap(true);
 
         nextLevel = new ImageButton(new TextureRegionDrawable(new TextureRegion(nextTexture)));
         nextLevel.setBounds(halfWidth+(buttonWidth*0.2f),Gdx.graphics.getHeight()*0.2f-(buttonHeight),buttonWidth,buttonHeight);
@@ -71,23 +81,32 @@ public class PopUp {
 
         nextLevel.setVisible(false);
         levelSelect.setVisible(false);
+        errorButton.setVisible(false);
+        errorText.setVisible(false);
         stage.addActor(nextLevel);
         stage.addActor(levelSelect);
+        stage.addActor(errorButton);
+        stage.addActor(errorText);
     }
 
-    public void show(SpriteBatch batch,Camera camera,int stat,String s){
-        bgWidth = camera.viewportWidth*0.6f;
-        bgHeight =  camera.viewportHeight*0.6f;
-        bgX = camera.position.x-(camera.viewportWidth*0.3f);
-        bgY = camera.position.y-(camera.viewportHeight*0.3f);
+    public void show(String s){
+        errorText.setText(s);
+        errorButton.setVisible(true);
+        errorText.setVisible(true);
+    }
 
-        if (stat == 1) {
-            batch.draw(bgTexture, bgX, bgY, bgWidth, bgHeight);
-            nextLevel.setVisible(true);
-            levelSelect.setVisible(true);
-        }
+    public void show(SpriteBatch batch,Camera camera){
+        victoryWidth = camera.viewportWidth*0.6f;
+        victoryHeight =  camera.viewportHeight*0.6f;
+        victoryX = camera.position.x-(camera.viewportWidth*0.3f);
+        victoryY = camera.position.y-(camera.viewportHeight*0.3f);
+        batch.draw(victoryTexture, victoryX, victoryY, victoryWidth, victoryHeight);
+        nextLevel.setVisible(true);
+        levelSelect.setVisible(true);
     }
 
     public Stage getStage(){return stage;}
+
+    public ImageButton getErrorButton(){return errorButton;}
 
 }

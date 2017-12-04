@@ -3,6 +3,7 @@ package com.mygdx.game.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,7 +19,7 @@ public class enemy {
     private float width,height;
     private String direction;
     private Rectangle hitBox,attackHitBox;
-    private String name;
+    private Label name;
     private Skin skin;
 
     public boolean isCollide,dead;
@@ -28,7 +29,6 @@ public class enemy {
         this.typeY = typeY;
         this.direction = direction;
         this.skin = skin;
-        this.name = name;
         enemyTexture = new Texture(Gdx.files.internal("characters.png"));
         deathTexture = new Texture(Gdx.files.internal("$dead.png"));
         TextureRegion[][] tmp = TextureRegion.split(enemyTexture,enemyTexture.getWidth()/12,enemyTexture.getHeight()/8);
@@ -48,9 +48,10 @@ public class enemy {
 
         setState(this.direction);
 
-//        this.name = new Label(name,skin);
-//        this.name.setBounds(x,y+32,width,height);
-
+        this.name = new Label(name,skin);
+        this.name.setPosition(x,y+32);
+        this.name.setFontScale(Gdx.graphics.getDensity()/2.5f);
+        
         this.x = x;
         this.y = y;
         this.width = 32;
@@ -68,7 +69,6 @@ public class enemy {
         this.height = 32;
         isCollide = false;
         dead = false;
-
     }
 
     private TextureRegion[] frames(TextureRegion[][] tmp,int a,int b){
@@ -103,17 +103,16 @@ public class enemy {
     public void draw(SpriteBatch batch, float time){
         if (dead)
             state = deadAnimation;
-
+        
         hitBox.x = x;
         hitBox.y = y;
         batch.draw(state.getKeyFrame(time, true), x, y, width, height);
-//        skin.getFont("default-font").draw(batch,name,x,y+32);
-
+        name.draw(batch,time);
     }
 
     public Rectangle getHitBox(){return hitBox;}
 
     public Rectangle getAttackHitBox(){return attackHitBox;}
+    
+    public String getName(){return name.getName();}
 }
-
-

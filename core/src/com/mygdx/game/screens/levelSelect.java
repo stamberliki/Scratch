@@ -38,7 +38,7 @@ public class levelSelect implements Screen {
     private com.mygdx.game.jsonParser jsonParser;
     private ShapeRenderer shapeRenderer;
 
-    private  float aspectRatio = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+    private float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
     private float backWidth = Gdx.graphics.getWidth()*0.1f;
     private float backHeight = Gdx.graphics.getHeight()*0.1f;
     private float backX = Gdx.graphics.getWidth()*0.03f;
@@ -77,11 +77,12 @@ public class levelSelect implements Screen {
         backBtn.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                dispose();
                 game.setScreen(prevScreen);
             }
         });
 
-        for (int level = 0 ; level != 3 ; level++){
+        for (int level = 0 ; level != 4 ; level++){
             final int finalLevel = level;
             levelButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/BUTTON-PLAY.png")))));
             levelButton.addListener(new ClickListener(){
@@ -94,8 +95,6 @@ public class levelSelect implements Screen {
             });
             buttonList.add(levelButton);
         }
-
-//        .pad(screenHeight*0.08f,0,screenHeight*0.02f,0)
 
         Table scrollTable = new Table();
         int x = 1;

@@ -42,6 +42,7 @@ public class options implements Screen{
         backBtn.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                dispose();
                 game.setScreen(prevScreen);
             }
         });
@@ -60,7 +61,6 @@ public class options implements Screen{
         batch.end();
         stage.act();
         stage.draw();
-
     }
 
     @Override

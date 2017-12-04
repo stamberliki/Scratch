@@ -10,5 +10,9 @@
   3: {
     name: "stage 3",
     description: "stage 3",
+  },
+  4: {
+    name: "stage 4",
+    description: "stage 4",
   }
 }

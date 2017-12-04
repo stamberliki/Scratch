@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-up" width="59" height="20" tilewidth="16" tileheight="16" nextobjectid="22">
+ <tileset firstgid="1" source="liquid.tsx"/>
+ <tileset firstgid="769" source="4.tsx"/>
+ <tileset firstgid="1729" source="3.tsx"/>
+ <layer name="Tile Layer 1" width="59" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzt0zsRgEAQBNFlAf8eODDCxwgHPmgRBFtTE3TQAl4bIlbaaKEm/AeddNEu/p0eeukW/zEjJpopU/srebJXe7VXe7VX7a/kyV7t1V7t1V61v5Ine/3vPxq4reI=
+  </data>
+ </layer>
+ <layer name="animation" width="59" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzt07kNgFAMBFFjoP8eOBqBTyMcfbCWCCjBsiaYYEPLeq0zO9SmdtWK7knd6lGnugrvuH1ws1G56r3ujtsXtX4/ngvvuD2LJ7ziFa94xWsuX3jFK17xmsETXvGKV7z+vb6mW63O
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="59" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzlV1tuwjAQTEkuUtqL9HER0lyktBcp5SIFLgL0IB0kj1iNvHX95S2sNBoHjSN2Z9dJxr7rXoAx8QkTcDN03QzoDb/i9yXwBrwDpYimp5bMfTbXqP+9Vk8/1ddb5DgH7obz/fTej8DTLxxN7/lqr7n+AFbAJ7DO7FWOpvd8tddcfwEbYAvsMnuVo+lrfN0DB+AIfP+hjtH0Nb7a82oYynWMpq/x1Z5X9+bMeujP8/8cQM/cOMsec85zvnq8MOspgH5MOs6yx5zznK8e69nfWr9MOs6yx5zzS/BV3/uUOeeX4KuG+soeXvXl2SZr3VvrT7zO5Kq+softc7rEWvfW+k3yS0N17GH7nC6x1r21/pD8KvUwc81903msdW+tn6UcSj3Mea0JrXtrvRfaw5zXmoj2neqF18M18V98vaYe/gHPTL+C
+  </data>
+ </layer>
+ <layer name="Tile Layer 4" width="59" height="20">
+  <data encoding="base64" compression="zlib">
+   eJztz0EBABAUBcF3k40m9A/AUYLvYCbBbsKtt2S01xU15vlcn7wCAAAAdTZ0FwGD
+  </data>
+ </layer>
+ <objectgroup name="finishBlock">
+  <object id="1" x="144.485" y="48.2197" width="31" height="31.3333"/>
+ </objectgroup>
+ <objectgroup name="blockObj">
+  <object id="2" x="68.5" y="-14" width="26.5" height="248"/>
+  <object id="3" x="88.6667" y="209" width="810.333" height="22.6667"/>
+  <object id="5" x="177.25" y="-5.25" width="61.5" height="131.75"/>
+  <object id="6" x="273.5" y="113.5" width="61.5" height="102"/>
+  <object id="7" x="234.667" y="-12" width="735.333" height="42.6667"/>
+  <object id="8" x="369.333" y="24.6667" width="61.3333" height="100.667"/>
+  <object id="10" x="465" y="113" width="62" height="110.5"/>
+  <object id="11" x="561" y="28.3333" width="61.6667" height="98.3333"/>
+  <object id="12" x="657" y="113.333" width="61.6667" height="112.667"/>
+  <object id="13" x="753" y="25" width="61.6667" height="101.333"/>
+  <object id="14" x="880.667" y="128.667" width="22.3333" height="85"/>
+  <object id="16" x="884.545" y="128.727" width="69.2727" height="17.6364"/>
+  <object id="18" x="945.333" y="5.33333" width="32" height="133.333"/>
+  <object id="21" x="84.5" y="-3.5" width="113.5" height="35.1364"/>
+ </objectgroup>
+</map>

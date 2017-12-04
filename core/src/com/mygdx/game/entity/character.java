@@ -18,7 +18,7 @@ public class character implements character_interface {
     private Texture characterTexture, attackTexture,deadTexture;
     private int x,y, nextX, nextY,steps;
     private float width,height,gameTime;
-    private String currentCommand;
+    private String currentCommand,enemyTarget;
     private com.mygdx.game.codeParser codeParser;
     public boolean isRunning,isBlocked,attack;
     private Rectangle hitBox,attackHitBox;
@@ -120,6 +120,8 @@ public class character implements character_interface {
     public Rectangle getHitBox(){return hitBox;}
 
     public Rectangle getAttackHitBox(){return  attackHitBox;}
+    
+    public String getTarget(){return enemyTarget;}
 
     public void run(){
         nextX = x;
@@ -175,18 +177,18 @@ public class character implements character_interface {
                 Gdx.app.log("",""+attackHitBox.y);
                 if (currentCommand.equals("up")){
                     attackHitBox.x = x;
-                    attackHitBox.y += (32/state.getAnimationDuration()/32);
+                    attackHitBox.y += (32*2/state.getAnimationDuration());
                 }
                 else if (currentCommand.equals("down")){
                     attackHitBox.x = x;
-                    attackHitBox.y += (32/state.getAnimationDuration()/32);
+                    attackHitBox.y -= (32*2/state.getAnimationDuration());
                 }
                 else if (currentCommand.equals("left")){
-                    attackHitBox.x += (32/state.getAnimationDuration()/32);
+                    attackHitBox.x -= (32*2/state.getAnimationDuration());
                     attackHitBox.y = y;
                 }
                 else if (currentCommand.equals("right")){
-                    attackHitBox.x += (32/state.getAnimationDuration()/32);
+                    attackHitBox.x += (32*2/state.getAnimationDuration());
                     attackHitBox.y = y;
                 }
             }
@@ -232,6 +234,7 @@ public class character implements character_interface {
     public void attack(String name){
         attack = true;
         gameTime = 0;
+        enemyTarget = name;
         if (currentCommand.equals("up")){
             state = attackTop;
         }

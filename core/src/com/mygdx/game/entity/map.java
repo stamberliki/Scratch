@@ -1,11 +1,14 @@
 package com.mygdx.game.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class map {
     private TiledMap map;
@@ -20,7 +23,7 @@ public class map {
         mapRenderer = new OrthogonalTiledMapRenderer(map);
     }
 
-    public void draw(SpriteBatch batch){
+    public void draw(){
         camera.update();
         mapRenderer.setView(camera);
         mapRenderer.render();
@@ -43,6 +46,5 @@ public class map {
     public TiledMap getMap(){return map;}
 
     public TiledMapRenderer getMapRenderer(){return mapRenderer;}
-
 
 }

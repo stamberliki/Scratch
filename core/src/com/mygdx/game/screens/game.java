@@ -2,21 +2,17 @@ package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -41,7 +37,7 @@ import com.mygdx.game.entity.gameData;
 import com.mygdx.game.jsonParser;
 import com.mygdx.game.tess_interface;
 
-public class game implements Screen,GestureDetector.GestureListener {
+public class game implements Screen,GestureDetector.GestureListener,InputProcessor{
     private SpriteBatch batch;
     private com.mygdx.game.entity.character character;
     private character_interface hero;
@@ -62,22 +58,22 @@ public class game implements Screen,GestureDetector.GestureListener {
     private jsonParser jsonParser;
     private JsonValue res;
     private gameData gameData;
-    private Music bgmusic;
     private int currentLevel;
     private ShapeRenderer shapeRenderer;
     private Screen prevScreen;
     private ImageButton backBtn;
     private Texture backTexture;
     private com.mygdx.game.entity.enemy[] enemy;
+    private String errorMsg;
 
     private final StringBuilder build = new StringBuilder();
-    private float aspectRatio = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+    private float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
     private float backWidth = Gdx.graphics.getWidth()*0.1f;
     private float backHeight = Gdx.graphics.getHeight()*0.1f;
     private float backX = Gdx.graphics.getWidth()*0.03f;
     private float backY = Gdx.graphics.getHeight()*0.95f-backHeight;
     private float buttonWidth = Gdx.graphics.getWidth()*0.1f;
-    private float buttonHeight = buttonWidth*aspectRatio;
+    private float buttonHeight = buttonWidth/aspectRatio;
 
     public game(tess_interface tess,MyGdxGame game,Screen prevScreen,int mapLevel){
         this.tess = tess;
@@ -110,6 +106,8 @@ public class game implements Screen,GestureDetector.GestureListener {
         game.setScreen(new levelSelect(tess,game));
     }
 
+    public Skin getSkin(){return skin;}
+
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
@@ -135,6 +133,7 @@ public class game implements Screen,GestureDetector.GestureListener {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 game.getAudioManager().getGameMusic().stop();
                 game.getAudioManager().getMenuMusic().play();
+                dispose();
                 game.setScreen(prevScreen);
             }
         });
@@ -183,14 +182,13 @@ public class game implements Screen,GestureDetector.GestureListener {
                         @Override
                         public void run() {
                             try {
-                                if (tess.runCode("hero.moveRight();hero.moveUp();hero.attack(\"etetew\");hero.moveUp();", hero)){  //run code
+                                if (tess.runCode("hero.moveRight();hero.moveUp();hero.attack(\"enemy1\");hero.moveUp();", hero)){  //run code
                                     character.isRunning = false;
                                 }
                             } catch (Exception e) {
-                                float popUpWidth = Gdx.graphics.getWidth()*0.6f;
-                                float popUpHeight = Gdx.graphics.getHeight()*0.6f;
-                                Gdx.app.log("",e.toString());
-    //                                error = true;
+                                errorMsg = e.toString();
+                                error = true;
+                                character.isRunning = false;
                             }
                         }
                     }).start();
@@ -198,27 +196,11 @@ public class game implements Screen,GestureDetector.GestureListener {
             }
         });
 
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        float mapAspectRatio = Map.getMapWidth() / Map.getMapHeight();
         camera.viewportHeight = Map.getMapHeight();
-        camera.viewportWidth = camera.viewportHeight * mapAspectRatio;
+        camera.viewportWidth = camera.viewportHeight*aspectRatio;
         camera.position.set((character.getX() + camera.viewportWidth / 6) + 16, character.getY() + 16, 0);
-
-        if(res.getBoolean("hasLimitBoundary")){
-            if (res.getInt("limitBoundaryX")*16*currentZoom < Map.getMapWidth() ){
-                camera.zoom = res.getInt("limitBoundaryX")*16/camera.viewportWidth;
-                currentZoom = camera.zoom;
-                Map.getCamera().zoom = currentZoom;
-                mapCurrentZoom = currentZoom;
-            }
-            if(res.getInt("limitBoundaryY")*16*currentZoom < Map.getMapHeight()){
-                camera.zoom = res.getInt("limitBoundaryY")*16/camera.viewportHeight;
-                currentZoom = camera.zoom;
-                Map.getCamera().zoom = currentZoom;
-                mapCurrentZoom = currentZoom;
-            }
-        }
 
         camera.update();
 
@@ -240,6 +222,7 @@ public class game implements Screen,GestureDetector.GestureListener {
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(popUp.getStage());
         inputMultiplexer.addProcessor(gd);
+        inputMultiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         conditions = new conditions(gameData);
@@ -268,7 +251,7 @@ public class game implements Screen,GestureDetector.GestureListener {
         Map.setX(camera.position.x);
         Map.setY(camera.position.y);
 
-        Map.draw(batch);
+        Map.draw();
 
         batch.begin();
 
@@ -283,13 +266,20 @@ public class game implements Screen,GestureDetector.GestureListener {
 
         // Enemy
         for (com.mygdx.game.entity.enemy enemyLocation : enemy){
-            if (Intersector.overlaps(enemyLocation.getAttackHitBox(),character.getHitBox()) && !enemyLocation.dead){
-                character.dead = true;
-                conditions.setCharacterDead(true);
+            if (character.attack){
+                if (Intersector.overlaps(enemyLocation.getHitBox(),character.getAttackHitBox()) &&
+                    !enemyLocation.dead && character.getTarget().equals(enemyLocation.getName())){
+                    enemyLocation.dead = true;
+                    conditions.enemyReduce();
+                }
             }
-            if (Intersector.overlaps(enemyLocation.getHitBox(),character.getAttackHitBox()) && !enemyLocation.dead && character.attack){
-                enemyLocation.dead = true;
-                conditions.enemyReduce();
+            else {
+                if (Intersector.overlaps(enemyLocation.getAttackHitBox(), character.getHitBox()) &&
+                    !enemyLocation.dead)
+                {
+                    character.dead = true;
+                    conditions.setCharacterDead(true);
+                }
             }
             enemyLocation.draw(batch,elapsedTime);
         }
@@ -317,17 +307,18 @@ public class game implements Screen,GestureDetector.GestureListener {
 
         stage.draw();
 
-        Gdx.app.log("",conditions.characterFinish+" | "+conditions.noOfEnemies+" | "+conditions.noOfCoins+" | "+conditions.isConditionsMeet());
         if (error) {
+            if(popUp.getErrorButton().isPressed()) error = false;
             batch.begin();
-            popUp.show(batch,camera,0,"");
-            error = false;
+            popUp.show(errorMsg);
             batch.end();
+            popUp.getStage().draw();
         }
         if (conditions.isCharacterDead()){
             batch.begin();
-            popUp.show(batch,camera,0,"Your character is dead.");
+            popUp.show("Your character is dead.");
             batch.end();
+            popUp.getStage().draw();
         }
         if (conditions.isConditionsMeet()){
             Gdx.input.setInputProcessor(popUp.getStage());
@@ -339,7 +330,7 @@ public class game implements Screen,GestureDetector.GestureListener {
             shapeRenderer.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             batch.begin();
-            popUp.show(batch,camera,1,"");
+            popUp.show(batch,camera);
             batch.end();
             popUp.getStage().draw();
         }
@@ -430,20 +421,52 @@ public class game implements Screen,GestureDetector.GestureListener {
     public void checkEdgeTouch(){
         float halfWidth = camera.viewportWidth*camera.zoom/2;
         float halfHeight = camera.viewportHeight*camera.zoom/2;
-        float specialRight = camera.viewportWidth*camera.zoom/6;
-        if(res.getBoolean("hasLimitBoundary")){
-            float boundaryY = ((res.getInt("limitBoundaryY")*16)*camera.zoom)/2;
-            float boundaryX = ((res.getInt("limitBoundaryX")*16)*camera.zoom)/6;
-            if (camera.position.y > boundaryX) camera.position.y = boundaryY;
-            if (camera.position.x+(boundaryX) > res.getInt("limitBoundaryX")*16) camera.position.x = res.getInt("limitBoundaryX")*16-boundaryX;
-        }
-        else{
-            if (camera.position.x+(specialRight) > Map.getMapWidth()) camera.position.x = Map.getMapWidth()- specialRight; //right
-            if (camera.position.y-(halfHeight) < 0) camera.position.y = halfHeight; //below
-        }
+        float specialRight = camera.viewportWidth*camera.zoom/2*0.25f;
+        if (camera.position.x+(specialRight) > Map.getMapWidth()) camera.position.x = Map.getMapWidth()- specialRight; //right
+        if (camera.position.y-(halfHeight) < 0) camera.position.y = halfHeight; //below
         if (camera.position.x-(halfWidth) < 0) camera.position.x = halfWidth; //left
         if (camera.position.y+(halfHeight) > Map.getMapHeight()) camera.position.y = Map.getMapHeight() - halfHeight;  //top
         camera.update();
     }
 
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        code.getOnscreenKeyboard().show(false);
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 }

@@ -30,7 +30,7 @@ public class mainMenu implements Screen{
 
     private int screenWidth = Gdx.graphics.getWidth();
     private int screenHeight = Gdx.graphics.getHeight();
-    private float aspectRatio = screenWidth/screenHeight;
+    private float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
     private float buttonWidth = screenWidth*0.2f;
     private float buttonHeight = buttonWidth*aspectRatio;
     private float titleHeight = screenHeight*0.4f;
@@ -57,6 +57,7 @@ public class mainMenu implements Screen{
         play.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                dispose();
                 game.setScreen(new levelSelect(tess,game,thisScreen));
             }
         });
@@ -67,8 +68,8 @@ public class mainMenu implements Screen{
         options.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                dispose();
                 game.setScreen(new options(thisScreen,game));
-                hide();
             }
         });
 
@@ -89,13 +90,12 @@ public class mainMenu implements Screen{
     public void render(float delta) {
         Gdx.gl.glClearColor(179/255f,141/255f,36/255f,8);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        float titleRatio = titleTexture.getWidth()/titleTexture.getHeight();
 
         batch.begin();
 
         batch.draw(backgroundTexture,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        batch.draw(titleTexture,screenWidth/2-(titleWidth*titleRatio/2),screenHeight*0.40f,
-                titleWidth*titleRatio,titleHeight);
+        batch.draw(titleTexture,screenWidth/2-(titleWidth/2),screenHeight*0.40f,
+                titleWidth,titleHeight);
 
         batch.end();
         stage.draw();

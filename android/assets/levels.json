@@ -33,5 +33,16 @@
     audio:"Castle2.mp3",
     hasLimitBoundary:false,
     hasTiledAnimation:true,
+  },
+  4: {
+    noOfCoin: 0,
+    coinPositions: [],
+    heroPosition: [57, 15],
+    noOfEnemy: 0,
+    enemyPositions:[],
+    enemyNames:[],
+    audio:"Castle2.mp3",
+    hasLimitBoundary:false,
+    hasTiledAnimation:true,
   }
 }

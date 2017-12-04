@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="16" tileheight="16" nextobjectid="15">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-up" width="23" height="19" tilewidth="16" tileheight="16" nextobjectid="15">
  <tileset firstgid="1" source="tile4.tsx"/>
  <tileset firstgid="769" source="tile6.tsx"/>
  <tileset firstgid="1793" source="wall.tsx"/>
  <tileset firstgid="2753" source="items.tsx"/>
  <tileset firstgid="3137" source="untitled.tsx"/>
- <layer name="bg" width="32" height="20">
+ <layer name="bg" width="23" height="19">
   <data encoding="base64" compression="zlib">
-   eJzjY2Jg4AdiPhrRhMA7RgaG94y0owkBWvl71P+j/h/1/6j/R/0/6v9R/w8t/6/jgWB6+B9mF60wIQAAfxTsUA==
+   eJzjY2Jg4AdiPhrQ7xgZGN4z0oamhXtH3T3q7lF3j7p71N0D4+51PBBMqbsB0LTRxg==
   </data>
  </layer>
- <layer name="Tile Layer 6" width="32" height="20">
+ <layer name="Tile Layer 6" width="23" height="19">
   <data encoding="base64" compression="zlib">
-   eJxjYBjZoImdeNyMRCcBcTI75fYvYiceL0aiYe6gFBxiJx4fRqIToWFAKTjMTh5uHCb2K3OQh6llfycjA0MXI+k0zH5K88VKoFmrGEmnF6LlCXLzhRM7cRjkrxR2hP8P4sgfiST6Hz388NEg+2H+fwhkP8aCG6lULqADdP8zAtMgMxbcSKVyER2g+18RT76gh//x5Qta+b+FnXC+oKX/kwnkEWcy8j+xgJR8Qgv/D1cAAFGzi4E=
+   eJxjYBiaoImdeNyMRCcBcTI7frMXsROPFyPRMDvwgUPsxOPDSHQi1O34wGF28nDjAJutzEEeJsbsTkYGhi5G0mmY2fjSz0qgulWMpNML0dIOtvTjxE4cBrknhR3h7oM40lEikrvR/YSPBpkNc/dDIPsxFtxIRLpHB+juZgTGJzMW3EhEfkUH6O5WxJN+KHU3vvRDjrtb2AmnH3LdnUwgLTmzE1c+YnM3semJVHeTAwCwfouB
   </data>
  </layer>
- <layer name="Tile Layer 4" width="32" height="20">
+ <layer name="Tile Layer 4" width="23" height="19">
   <data encoding="base64" compression="zlib">
-   eJxjYBhY0MjNwNDEPXD2zwTaPWsA7R8FxIFeZgaGPuaBs38t0O51A2j/UAFDLT8PNfeOgsEJeIFlA98Alg+6QLv1BkH5NJqfhhYAAGzkDI0=
+   eJxjYKAdaORmYGjipo3ZM4HmzqKR2cMd9DIzMPQx08bstUBz19HI7MEA6JWmR/PO0AS8wLTPR6P0rws0V4/GeWs4pDsAEkgMjQ==
   </data>
  </layer>
- <layer name="animation" width="32" height="20" visible="0">
+ <layer name="animation" width="23" height="19" visible="0">
   <data encoding="base64" compression="zlib">
-   eJxjYBhY0MrNwNDGPXD2zwXaPW8A7R8FxIFeZgaGPuaBs38t0O51A2j/UAFDLT8PNfeOgsEJeIFlA98Alg+6QLv1BkH5NJqfhhYAALpzDM0=
+   eJxjYKAdaOVmYGjjpo3Zc4HmzqOR2cMd9DIzMPQx08bstUBz19HI7MEA6JWmR/PO0AS8wLTPR6P0rws0V4/GeWs4pDsA6AgMzQ==
   </data>
  </layer>
  <objectgroup name="blockObj">
