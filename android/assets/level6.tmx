@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-up" width="16" height="48" tilewidth="16" tileheight="16" nextobjectid="21">
+ <tileset firstgid="1" source="4.tsx"/>
+ <tileset firstgid="961" source="untitled.tsx"/>
+ <tileset firstgid="1729" source="3.tsx"/>
+ <layer name="Tile Layer 1" width="16" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztzbERACAIADEK59FNcP9tZAWwTfH3ZXJF3CqH39X5+NTl8/l8Pp/P5/P5/T/SjMeB
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="16" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztkl0KgzAQhNf2ZLa9iLUXMe1F+nOyehF3wYBEdxwCfSjswDAPUb5kd0RCobVOs88gL+qrugeJzm7qpL6DRGcPcP/X7HeRqeB7+qrHjexI/qEROTbrHEh+K9tzTyS/k/3dIP4g+7th+fZ9uQfLD8m3e3r7YPh2T28fDN/S6z/Dr5n/U/z+LufiKfob/Y3+Rn8z75/7i+bE8Gv+X/YXzRkp82uV3/9LTT1epB0=
+  </data>
+ </layer>
+ <layer width="16" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztloEJwjAQRS/qJOoiVhcxOkl1kuok6iTqIN5Rj34ChguxRCSBxw+hvz9pr+U8Ee0Y/1ZhT/bRMgdQ4Zjg19xS+R1zAhXOCf4LcwUVbgn+O/MAFZ4J/okjmrpBhZmz++d87cINKiwT/KVHw6xBhU2Cv3T9fcpvMvPbzHyrv+aPk99l5lvHWPVvrd9fff41Py/fWr/1//uf7//b+WGfpRrz61rMH9u/rskI+zRVzNW5eLAHWVFfT9ir6Bw9eBb8BrbB/T3Mcd/hWTQnXMezvQAbQ6KC
+  </data>
+ </layer>
+ <objectgroup name="blockObj">
+  <object id="1" x="-11.6667" y="121.667" width="106.333" height="21"/>
+  <object id="3" x="84" y="111.667" width="181.667" height="15.5"/>
+  <object id="5" x="-19.5" y="134" width="19" height="61"/>
+  <object id="6" x="-11.6665" y="177.5" width="106.333" height="21"/>
+  <object id="7" x="87.5" y="192.5" width="103.5" height="30.5"/>
+  <object id="8" x="160.25" y="288.75" width="106.5" height="30.5"/>
+  <object id="9" x="85.25" y="368.25" width="106" height="30.5"/>
+  <object id="10" x="161.25" y="465.75" width="106" height="30.5"/>
+  <object id="11" x="83.25" y="544.25" width="109" height="30.5"/>
+  <object id="12" x="160.25" y="641.25" width="98.5" height="94"/>
+  <object id="14" x="256.5" y="105" width="25" height="550.5"/>
+  <object id="15" x="68" y="216.75" width="25" height="517.5"/>
+  <object id="16" x="90.25" y="721.25" width="19.75" height="35.75"/>
+  <object id="17" x="145.25" y="721" width="21.5" height="33.5"/>
+  <object id="18" x="95.25" y="753" width="72.25" height="13.75"/>
+ </objectgroup>
+ <objectgroup name="finishBlock">
+  <object id="19" x="113.333" y="689" width="29.3333" height="30"/>
+ </objectgroup>
+</map>

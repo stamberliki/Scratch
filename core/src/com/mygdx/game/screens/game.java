@@ -145,7 +145,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
 
         enemy = new enemy[gameData.noOfEnemy];
         for (int x = 0; x != gameData.noOfEnemy ; x++){
-            enemy[x] = new enemy(gameData.enemyPositions[x][0]*16, gameData.enemyPositions[x][1]*16,0,9,"down",gameData.enemyNames[x],skin);
+            enemy[x] = new enemy(gameData.enemyPositions[x][0]*16, gameData.enemyPositions[x][1]*16,0,9,gameData.enemyDirection[x],gameData.enemyNames[x],skin);
         }
 
         pictureBtn = new TextButton("OCR",skin);
@@ -198,8 +198,14 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        camera.viewportHeight = Map.getMapHeight();
-        camera.viewportWidth = camera.viewportHeight*aspectRatio;
+        if (Map.getMapWidth() > Map.getMapHeight()){
+            camera.viewportHeight = Map.getMapHeight();
+            camera.viewportWidth = camera.viewportHeight*aspectRatio;
+        }
+        else{
+            camera.viewportWidth = Map.getMapWidth()+(Map.getMapWidth()/2*0.75f);
+            camera.viewportHeight = camera.viewportWidth/aspectRatio;
+        }
         camera.position.set((character.getX() + camera.viewportWidth / 6) + 16, character.getY() + 16, 0);
 
         camera.update();
@@ -243,10 +249,10 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         batch.setProjectionMatrix(camera.combined);
 
         if (gameData.hasTiledAnimation)
-        if ((int)elapsedTime%2>0)
-            Map.getMap().getLayers().get("animation").setVisible(false);
-        else
-            Map.getMap().getLayers().get("animation").setVisible(true);
+            if ((int)elapsedTime%2>0)
+                Map.getMap().getLayers().get("animation").setVisible(false);
+            else
+                Map.getMap().getLayers().get("animation").setVisible(true);
 
         Map.setX(camera.position.x);
         Map.setY(camera.position.y);
@@ -266,19 +272,24 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
 
         // Enemy
         for (com.mygdx.game.entity.enemy enemyLocation : enemy){
-            if (character.attack){
-                if (Intersector.overlaps(enemyLocation.getHitBox(),character.getAttackHitBox()) &&
-                    !enemyLocation.dead && character.getTarget().equals(enemyLocation.getName())){
-                    enemyLocation.dead = true;
-                    conditions.enemyReduce();
+            if (!enemyLocation.dead){
+                if (character.attack) {
+                    if (!character.getTarget().equals(enemyLocation.getName())) {
+                        error = true;
+//                        errorMsg = ""
+                    }
+                    else {
+                        if (Intersector.overlaps(enemyLocation.getHitBox(), character.getAttackHitBox())) {
+                            enemyLocation.dead = true;
+                            conditions.enemyReduce();
+                        }
+                    }
                 }
-            }
-            else {
-                if (Intersector.overlaps(enemyLocation.getAttackHitBox(), character.getHitBox()) &&
-                    !enemyLocation.dead)
-                {
-                    character.dead = true;
-                    conditions.setCharacterDead(true);
+                else {
+                    if (Intersector.overlaps(enemyLocation.getAttackHitBox(), character.getHitBox())) {
+                        character.dead = true;
+                        conditions.setCharacterDead(true);
+                    }
                 }
             }
             enemyLocation.draw(batch,elapsedTime);
@@ -292,7 +303,8 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
                 character.isBlocked = true;
             }
         }
-
+        
+        //finishBlock
         objects = Map.getMap().getLayers().get("finishBlock").getObjects();
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
             Rectangle rectangle = rectangleObject.getRectangle();

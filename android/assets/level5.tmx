@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-up" width="33" height="23" tilewidth="16" tileheight="16" nextobjectid="19">
+ <tileset firstgid="1" source="liquid.tsx"/>
+ <tileset firstgid="769" source="4.tsx"/>
+ <tileset firstgid="1729" source="items.tsx"/>
+ <tileset firstgid="2113" source="3.tsx"/>
+ <tileset firstgid="3137" source="tile4.tsx"/>
+ <layer name="Tile Layer 6" width="33" height="23">
+  <data encoding="base64" compression="zlib">
+   eJztwwEJAAAMA6AFeP8gS7gcBwV7SVVV1fcHYyczcQ==
+  </data>
+ </layer>
+ <layer name="Tile Layer 3" width="33" height="23">
+  <data encoding="base64" compression="zlib">
+   eJztlH0KwjAMxYPZSacnmd5ET+I8yfQgdgxhhBfzQQP+4YPyYPSt6S9tif7KamSiI9teqan9/8y2Z7XWfzLy1RzW+i9GfgLr9eRwbdmbgwOqoxeHuWUfwV70Pg/Pln2BPX1bU/bDe14sl+ugNeVci0vUIxysbAWHz7z9iNSY4aDdw/2o5hDp0wjmV3DQasneC00eDvJ7loOmO2/vFXJv37W8dE0Lb+8Vcu/+tLx0TYeBiAfs6EwiDlpeekbo7Yj0uYe8HCr1Cxw8Z30O1PAGYprVIA==
+  </data>
+ </layer>
+ <layer name="Tile Layer 3" width="33" height="23">
+  <data encoding="base64" compression="zlib">
+   eJzVlsENwjAMRS0cUeYAJqNsASdgEmAS6AYwAXCDIXAOVqzEFi0lLX3Sl2tHcZzUVQOQskCAkrQhbYX12pFGDgBdsPJZxpxTkteE1+Ra2HotSVPKPXPBymcZm/+gBuscLmOAK6ksqKYizGOfx9uwp3UOmFqvI+lJ+V+kFa23FjWwz+MeK4/0NU4UP2NqvSpM9x8jx6080te4UfyOqfV6YLr/GDlu5ZG+RtzjdXu9mqQxK4/0NeIeb9PrVh7pW1i93yVW71to7yHHnH9hyLV/S997HuJ3UYdc59r3+9LoqqYm/81cNPlv5qKLe9QnmtyjhsIbNoJmTg==
+  </data>
+ </layer>
+ <layer name="Tile Layer 4" width="33" height="23">
+  <data encoding="base64" compression="zlib">
+   eJztVtkNwjAMDTiLcCzCsUgDi7SwCMciHItwDEKiNkpqOcJKTL94kmVFtZ5fn92oSvWxAaUaGztQxag6Hs/H5XR1Blotpag7HhNxUmcMSR/qqJfnpM4N4ZeEBw4HJo+J/PHebIU0XJg8lA97IQ0PJs/R1p0gZBdnIQ0jzau72n43CNnFXUjDhKnhafu9IGQXbyENXIytVtAhu9BM/VKY2n4zHbKL+cAa/mixtPu3gpBdrAfeyV/ek1z88p7kgvLBoPnkzmmR4MDc8ftjPaVzqhIcmDt+hudSOqc6wYH/Ib5B0geTuWclPlTQ97rJ1FDig59F7EUOqP2kvhlq//HcUz58AIMIYE8=
+  </data>
+ </layer>
+ <layer name="Tile Layer 4" width="33" height="23">
+  <data encoding="base64" compression="zlib">
+   eJxjYBg6oJWdgaGNnX76sIG5QHPmkWEWufoGElAz3MgFQzHcRsEoGAUjB4yWk0MDjLYfRsFIAgBtnA5N
+  </data>
+ </layer>
+ <layer name="animation" width="33" height="23" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYBg6oJGdgaGJnX76sIGZQHNmkWEWufoGElAz3MgFQzHcRsEoGAUjB4yWk0MDjLYfRsFIAgDkbw3t
+  </data>
+ </layer>
+ <objectgroup name="blockObj">
+  <object id="1" x="369.227" y="257.386" width="236.917" height="23.5833"/>
+  <object id="2" x="369.042" y="103.333" width="236.917" height="23.5833"/>
+  <object id="4" x="198.833" y="7" width="171.833" height="23.6667"/>
+  <object id="5" x="369.333" y="16.3333" width="20.3333" height="100.667"/>
+  <object id="7" x="186.5" y="22.9998" width="20.3333" height="100.667"/>
+  <object id="8" x="193.167" y="353.667" width="200.833" height="23.6667"/>
+  <object id="9" x="369.333" y="262.666" width="20.3333" height="100.667"/>
+  <object id="10" x="186.414" y="262.576" width="20.1713" height="96.7579"/>
+  <object id="11" x="88" y="257.364" width="118.424" height="19.303"/>
+  <object id="13" x="83.4545" y="107.015" width="123.758" height="19.303"/>
+  <object id="14" x="66" y="100" width="27.5758" height="74.4848"/>
+  <object id="16" x="-33" y="153" width="104" height="21.1818"/>
+  <object id="17" x="66.1704" y="209.383" width="27.5758" height="74.4848"/>
+  <object id="18" x="-36.25" y="209.534" width="104" height="21.1818"/>
+ </objectgroup>
+ <objectgroup name="finishBlock"/>
+</map>

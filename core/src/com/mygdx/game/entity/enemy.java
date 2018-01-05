@@ -34,11 +34,11 @@ public class enemy {
         TextureRegion[][] tmp = TextureRegion.split(enemyTexture,enemyTexture.getWidth()/12,enemyTexture.getHeight()/8);
         downWalkAnimation = new Animation<TextureRegion>(1/3f,frames(tmp,typeX,typeY));
         downWalkAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-        leftWalkAnimation = new Animation<TextureRegion>(1/3f,frames(tmp,typeX,typeY));
+        leftWalkAnimation = new Animation<TextureRegion>(1/3f,frames(tmp,typeX+1,typeY));
         leftWalkAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-        rightWalkAnimation = new Animation<TextureRegion>(1/3f,frames(tmp,typeX,typeY));
+        rightWalkAnimation = new Animation<TextureRegion>(1/3f,frames(tmp,typeX+2,typeY));
         rightWalkAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-        upWalkAnimation = new Animation<TextureRegion>(1/3f,frames(tmp,typeX,typeY));
+        upWalkAnimation = new Animation<TextureRegion>(1/3f,frames(tmp,typeX+3,typeY));
         upWalkAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         if (typeY==9 && typeX==0)
             deadAnimation = new Animation<TextureRegion>(1,TextureRegion.split(deathTexture,deathTexture.getWidth()/3,deathTexture.getHeight()/4)[2][0]);
@@ -77,7 +77,6 @@ public class enemy {
         for ( int i = b ; i < b+3 ; i++){
             frames[index++] = tmp[a][i];
         }
-        typeX++;
         return frames;
     }
 

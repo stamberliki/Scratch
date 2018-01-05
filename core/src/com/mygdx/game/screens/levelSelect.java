@@ -82,13 +82,13 @@ public class levelSelect implements Screen {
             }
         });
 
-        for (int level = 0 ; level != 4 ; level++){
+        for (int level = 0 ; level != 7 ; level++){
             final int finalLevel = level;
             levelButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/BUTTON-PLAY.png")))));
             levelButton.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    game.getAudioManager().getMenuMusic().pause();
+                    game.getAudioManager().getMenuMusic ().pause();
                     dispose();
                     game.setScreen(new game(tess,game,thisScreen,finalLevel+1));
                 }

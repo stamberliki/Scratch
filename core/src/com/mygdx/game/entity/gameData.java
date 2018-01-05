@@ -7,7 +7,7 @@ public class gameData {
     public int noOfCoin, noOfEnemy;
     public int[][] coinPositions,enemyPositions;
     public int[] heroPosition;
-    public String[] enemyNames;
+    public String[] enemyNames,enemyDirection;
     public String musicName;
     public boolean hasTiledAnimation;
 
@@ -17,6 +17,7 @@ public class gameData {
         coinPositions = new int[noOfCoin][2];
         enemyPositions = new int[noOfEnemy][2];
         enemyNames = res.get("enemyNames").asStringArray();
+        enemyDirection = res.get("enemyDirection").asStringArray();
         musicName = res.getString("audio");
         hasTiledAnimation = res.getBoolean("hasTiledAnimation");
         heroPosition = res.get("heroPosition").asIntArray();

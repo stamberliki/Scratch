@@ -197,7 +197,9 @@ public class character implements character_interface {
             }
         }
     }
-
+    
+    // CHARACTER MOVEMENTS
+    
     public void moveUp(){
         gameTime = 0;
         nextY = y+steps;
