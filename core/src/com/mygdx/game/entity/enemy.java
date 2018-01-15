@@ -43,8 +43,7 @@ public class enemy {
         if (typeY==9 && typeX==0)
             deadAnimation = new Animation<TextureRegion>(1,TextureRegion.split(deathTexture,deathTexture.getWidth()/3,deathTexture.getHeight()/4)[2][0]);
 
-        hitBox = new Rectangle(x,y,32,16);
-        attackHitBox = new Rectangle(x,y,32,32);
+        hitBox = new Rectangle(x+6,y,20,12);
 
         setState(this.direction);
 
@@ -61,7 +60,7 @@ public class enemy {
     }
 
     public void reInitialize(int x,int y){
-        hitBox = new Rectangle(x,y,28,12);
+        hitBox = new Rectangle(x+6,y,20,12);
         setState(this.direction);
         this.x = x;
         this.y = y;
@@ -82,20 +81,20 @@ public class enemy {
 
     private void setState(String direction){
         if (direction.equals("up")){
-            attackHitBox.x += 16;
             state = upWalkAnimation;
+            attackHitBox = new Rectangle(x,y+16,32,16);
         }
         else if (direction.equals("down")){
-            attackHitBox.x -= 16;
             state = downWalkAnimation;
+            attackHitBox = new Rectangle(x,y-16,32,16);
         }
         else if (direction.equals("left")){
-            attackHitBox.y -= 16;
             state = leftWalkAnimation;
+            attackHitBox = new Rectangle(x-16,y,16,32);
         }
         else if (direction.equals("right")){
-            attackHitBox.y += 16;
             state = rightWalkAnimation;
+            attackHitBox = new Rectangle(x+32,y,16,32);
         }
     }
 
@@ -113,5 +112,6 @@ public class enemy {
 
     public Rectangle getAttackHitBox(){return attackHitBox;}
     
-    public String getName(){return name.getName();}
+    public String getName(){return name.getText().toString();}
+    
 }

@@ -13,6 +13,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -37,6 +40,8 @@ import com.mygdx.game.entity.gameData;
 import com.mygdx.game.jsonParser;
 import com.mygdx.game.tess_interface;
 
+import java.util.List;
+
 public class game implements Screen,GestureDetector.GestureListener,InputProcessor{
     private SpriteBatch batch;
     private com.mygdx.game.entity.character character;
@@ -55,17 +60,20 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
     private com.mygdx.game.entity.conditions conditions;
     private PopUp popUp;
     private boolean error,isAlreadyRunning;
-    private jsonParser jsonParser;
-    private JsonValue res;
-    private gameData gameData;
-    private int currentLevel;
-    private ShapeRenderer shapeRenderer;
-    private Screen prevScreen;
-    private ImageButton backBtn;
-    private Texture backTexture;
+    private jsonParser                    jsonParser;
+    private JsonValue                     res;
+    private int                           currentLevel;
+    private ShapeRenderer                 shapeRenderer;
+    private Screen                        prevScreen;
+    private ImageButton                   backBtn;
+    private Texture                       backTexture;
     private com.mygdx.game.entity.enemy[] enemy;
-    private String errorMsg;
-
+    private String                        errorMsg;
+    private TiledMapRenderer              topLayer;
+    private MapObjects                    objects;
+    private List<Boolean>                 enemyDead;
+    private gameData                      gameData;
+    
     private final StringBuilder build = new StringBuilder();
     private float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
     private float backWidth = Gdx.graphics.getWidth()*0.1f;
@@ -105,7 +113,15 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         this.dispose();
         game.setScreen(new levelSelect(tess,game));
     }
-
+    
+    public com.mygdx.game.entity.enemy[] getEnemy() {
+        return enemy;
+    }
+    
+    public void setError(boolean error){
+        this.error = error;
+    }
+    
     public Skin getSkin(){return skin;}
 
     @Override
@@ -116,7 +132,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         stage = new Stage();
         elapsedTime = 0;
         gameData = new gameData(res);
-        character = new character(gameData.heroPosition[0]*16, gameData.heroPosition[1]*16);
+        character = new character(gameData.heroPosition[0]*16, gameData.heroPosition[1]*16, this);
         hero = character;
         isAlreadyRunning = false;
 
@@ -147,12 +163,11 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         for (int x = 0; x != gameData.noOfEnemy ; x++){
             enemy[x] = new enemy(gameData.enemyPositions[x][0]*16, gameData.enemyPositions[x][1]*16,0,9,gameData.enemyDirection[x],gameData.enemyNames[x],skin);
         }
-
-        pictureBtn = new TextButton("OCR",skin);
-        pictureBtn.setBounds(0,0,buttonWidth,buttonHeight);
-        pictureBtn.addListener(tess.setGallerySelect());
-
-        code.setBounds((Gdx.graphics.getWidth()/2)*1.25f,0,(Gdx.graphics.getWidth()/2)*0.75f,Gdx.graphics.getHeight());
+        character.setEnemyPositions(gameData.enemyPositions);
+        character.setEnemyNames(gameData.enemyNames);
+        character.setEnemyDirection(gameData.enemyDirection);
+        
+        code.setBounds((Gdx.graphics.getWidth()/2)*1.30f,Gdx.graphics.getHeight()*0.15f,(Gdx.graphics.getWidth()/2)*0.65f,Gdx.graphics.getHeight()*0.7f);
         code.setFocusTraversal(false);
         code.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
@@ -162,19 +177,19 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
                 }
             }
         });
-
+        
         runCode = new TextButton("Run",skin);
-        runCode.setBounds(buttonWidth,0,buttonWidth,buttonHeight);
+        runCode.setBounds(((Gdx.graphics.getWidth())-(buttonWidth))*0.9f,Gdx.graphics.getHeight()*0.03f,buttonWidth,buttonHeight);
         runCode.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
-
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (!character.isRunning){
                     character.isRunning = true;
+                    error = false;
                     if(isAlreadyRunning)
                         reInitialize();
                     isAlreadyRunning = true;
@@ -182,11 +197,16 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
                         @Override
                         public void run() {
                             try {
-                                if (tess.runCode("hero.moveRight();hero.moveUp();hero.attack(\"enemy1\");hero.moveUp();", hero)){  //run code
+                                if (tess.runCode("hero.moveRight();" +
+                                    "hero.moveUp();" +
+                                    "if(hero.enemy()){hero.attack(hero.findNearestEnemy());}hero.moveUp();" +
+                                    "hero.moveRight();" +
+                                    "if(hero.enemy()){hero.attack(hero.findNearestEnemy());}hero.moveRight();" +
+                                    "hero.moveDown();hero.moveDown();if(hero.enemy()){hero.attack(hero.findNearestEnemy());}hero.moveDown();", hero)){  //run code
                                     character.isRunning = false;
                                 }
                             } catch (Exception e) {
-                                errorMsg = e.toString();
+                                errorMsg = "Code error";
                                 error = true;
                                 character.isRunning = false;
                             }
@@ -195,7 +215,11 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
                 }
             }
         });
-
+        
+        pictureBtn = new TextButton("OCR",skin);
+        pictureBtn.setBounds((runCode.getX())-(buttonWidth)*1.1f,Gdx.graphics.getHeight()*0.03f,buttonWidth,buttonHeight);
+        pictureBtn.addListener(tess.setGallerySelect());
+        
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         if (Map.getMapWidth() > Map.getMapHeight()){
@@ -203,7 +227,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
             camera.viewportWidth = camera.viewportHeight*aspectRatio;
         }
         else{
-            camera.viewportWidth = Map.getMapWidth()+(Map.getMapWidth()/2*0.75f);
+            camera.viewportWidth = Map.getMapWidth()+((Map.getMapWidth()/2)*0.75f);
             camera.viewportHeight = camera.viewportWidth/aspectRatio;
         }
         camera.position.set((character.getX() + camera.viewportWidth / 6) + 16, character.getY() + 16, 0);
@@ -212,10 +236,14 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
 
         currentZoom = camera.zoom;
         mapCurrentZoom = Map.getCamera().zoom;
-
+        
         Map.setViewportHeight(camera.viewportHeight);
         Map.setViewportWidth(camera.viewportWidth);
-
+        
+        TiledMap tiledMap = new TiledMap();
+        tiledMap.getLayers().add(Map.getMap().getLayers().get("top"));
+        topLayer = new OrthogonalTiledMapRenderer(tiledMap);
+        
         popUp = new PopUp(this,currentLevel);
 
         stage.addActor(code);
@@ -256,7 +284,6 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
 
         Map.setX(camera.position.x);
         Map.setY(camera.position.y);
-
         Map.draw();
 
         batch.begin();
@@ -274,65 +301,74 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         for (com.mygdx.game.entity.enemy enemyLocation : enemy){
             if (!enemyLocation.dead){
                 if (character.attack) {
-                    if (!character.getTarget().equals(enemyLocation.getName())) {
-                        error = true;
-//                        errorMsg = ""
-                    }
-                    else {
-                        if (Intersector.overlaps(enemyLocation.getHitBox(), character.getAttackHitBox())) {
+                    if (Intersector.overlaps(enemyLocation.getHitBox(), character.getAttackHitBox())) {
+                        if (character.getTarget().equals(enemyLocation.getName())){
                             enemyLocation.dead = true;
                             conditions.enemyReduce();
                         }
+                        else if (Intersector.overlaps(enemyLocation.getAttackHitBox(), character.getHitBox())) {
+                            character.dead = true;
+                        }
                     }
                 }
-                else {
-                    if (Intersector.overlaps(enemyLocation.getAttackHitBox(), character.getHitBox())) {
-                        character.dead = true;
-                        conditions.setCharacterDead(true);
-                    }
+                else if (Intersector.overlaps(enemyLocation.getHitBox(), character.getHitBox())) {
+                    character.dead = true;
+                    conditions.characterDead = true;
                 }
             }
             enemyLocation.draw(batch,elapsedTime);
         }
-
+    
         //Blocked by obstacles
-        MapObjects objects = Map.getMap().getLayers().get("blockObj").getObjects();
-        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = rectangleObject.getRectangle();
-            if (Intersector.overlaps(rectangle, character.getHitBox())) {
-                character.isBlocked = true;
+        if (!character.isBlocked) {
+            objects = Map.getMap().getLayers().get("blockObj").getObjects();
+            for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+                Rectangle rectangle = rectangleObject.getRectangle();
+                if (Intersector.overlaps(rectangle, character.getHitBox())) {
+                    character.isBlocked = true;
+                    errorMsg = "Character is blocked";
+                    error = true;
+                    character.isRunning = false;
+                }
             }
         }
         
         //finishBlock
-        objects = Map.getMap().getLayers().get("finishBlock").getObjects();
-        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = rectangleObject.getRectangle();
-            if (Intersector.overlaps(rectangle, character.getHitBox())) {
-                conditions.setCharacterFinish(true);
+        if (!conditions.characterFinish){
+            objects = Map.getMap().getLayers().get("finishBlock").getObjects();
+            for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+                Rectangle rectangle = rectangleObject.getRectangle();
+                if (Intersector.overlaps(rectangle, character.getHitBox())) {
+                    conditions.setCharacterFinish(true);
+                }
             }
         }
 
         character.draw(batch,elapsedTime);
-
+        
         batch.end();
-
+        
+        topLayer.setView(Map.getCamera());
+        topLayer.render();
+        
         stage.draw();
-
+        
         if (error) {
-            if(popUp.getErrorButton().isPressed()) error = false;
+            character.isRunning = false;
             batch.begin();
             popUp.show(errorMsg);
             batch.end();
             popUp.getStage().draw();
         }
         if (conditions.isCharacterDead()){
+            character.isRunning = false;
             batch.begin();
             popUp.show("Your character is dead.");
             batch.end();
             popUp.getStage().draw();
         }
         if (conditions.isConditionsMeet()){
+            character.isRunning = false;
             Gdx.input.setInputProcessor(popUp.getStage());
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -430,7 +466,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
 
     }
 
-    public void checkEdgeTouch(){
+    private void checkEdgeTouch(){
         float halfWidth = camera.viewportWidth*camera.zoom/2;
         float halfHeight = camera.viewportHeight*camera.zoom/2;
         float specialRight = camera.viewportWidth*camera.zoom/2*0.25f;

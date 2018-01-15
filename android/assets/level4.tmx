@@ -23,6 +23,11 @@
    eJztz0EBABAUBcF3k40m9A/AUYLvYCbBbsKtt2S01xU15vlcn7wCAAAAdTZ0FwGD
   </data>
  </layer>
+ <layer name="top" width="59" height="20">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T20JT6AAAAAA4GcScAAB
+  </data>
+ </layer>
  <objectgroup name="finishBlock">
   <object id="1" x="144.485" y="48.2197" width="31" height="31.3333"/>
  </objectgroup>

@@ -10,6 +10,7 @@ public class conditions {
         this.noOfEnemies = gameData.noOfEnemy;
         characterFinish = false;
         characterDead = false;
+        characterFinish = gameData.hasNoFinishBlock;
     }
 
     public void setCharacterFinish(boolean isFinish){ characterFinish = isFinish; }

@@ -51,9 +51,9 @@ public class splash implements Screen {
 
     @Override
     public void render(float delta) {
-        float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
-        float splashHeight = Gdx.graphics.getHeight()*0.3f;
-        float splashWidth = splashHeight*aspectRatio;
+        float aspectRatio = (float) splashScreen.getHeight() / (float) splashScreen.getWidth();
+        float splashWidth = Gdx.graphics.getWidth()*0.2f;
+        float splashHeight = splashWidth*aspectRatio;
         Gdx.gl.glClearColor(164/255f,164/255f,164/255f,0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

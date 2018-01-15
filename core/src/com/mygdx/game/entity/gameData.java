@@ -9,7 +9,7 @@ public class gameData {
     public int[] heroPosition;
     public String[] enemyNames,enemyDirection;
     public String musicName;
-    public boolean hasTiledAnimation;
+    public boolean hasTiledAnimation, hasNoFinishBlock;
 
     public gameData(JsonValue res){
         noOfCoin = res.getInt("noOfCoin");
@@ -20,6 +20,7 @@ public class gameData {
         enemyDirection = res.get("enemyDirection").asStringArray();
         musicName = res.getString("audio");
         hasTiledAnimation = res.getBoolean("hasTiledAnimation");
+        hasNoFinishBlock = res.getBoolean("hasNoFinishBlock");
         heroPosition = res.get("heroPosition").asIntArray();
         int a = 0;
         for ( JsonValue x: res.get("coinPositions") ){

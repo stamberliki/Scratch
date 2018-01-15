@@ -10,4 +10,6 @@ public interface character_interface {
     void moveRight();
     void moveLeft();
     void attack(String name);
+    String findNearestEnemy();
+    boolean enemy();
 }

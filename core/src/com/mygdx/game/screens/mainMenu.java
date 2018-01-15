@@ -33,8 +33,8 @@ public class mainMenu implements Screen{
     private float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
     private float buttonWidth = screenWidth*0.2f;
     private float buttonHeight = buttonWidth*aspectRatio;
-    private float titleHeight = screenHeight*0.4f;
-    private float titleWidth = titleHeight;
+    private float titleWidth = screenWidth*0.6f;
+    private float titleHeight;
 
     public mainMenu(tess_interface tess, MyGdxGame game){
         this.tess = tess;
@@ -52,7 +52,7 @@ public class mainMenu implements Screen{
         backgroundTexture = new Texture(Gdx.files.internal("bg.jpg"));
 
         play = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/BUTTON-PLAY.png")))));
-        play.setBounds(screenWidth/2-(buttonWidth/2),screenHeight*0.15f,
+        play.setBounds(screenWidth/2-(buttonWidth/2),(screenHeight/2)-(buttonHeight*0.8f),
                 buttonWidth,buttonHeight);
         play.addListener(new ClickListener(){
             @Override
@@ -74,7 +74,9 @@ public class mainMenu implements Screen{
         });
 
         titleTexture = new Texture(Gdx.files.internal("ui/JUANDER.png"));
-
+        
+        titleHeight = titleWidth*((float)titleTexture.getHeight()/(float)titleTexture.getWidth());
+        
         if (!audioPref.getBoolean("menuAudioOn")){
             game.getAudioManager().getMenuMusic().play();
             audioPref.putBoolean("menuAudioOn",true);
@@ -94,7 +96,7 @@ public class mainMenu implements Screen{
         batch.begin();
 
         batch.draw(backgroundTexture,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        batch.draw(titleTexture,screenWidth/2-(titleWidth/2),screenHeight*0.40f,
+        batch.draw(titleTexture,screenWidth/2-(titleWidth/2),screenHeight/2,
                 titleWidth,titleHeight);
 
         batch.end();

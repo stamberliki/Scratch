@@ -1,5 +1,6 @@
 package com.mygdx.game.entity;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -7,7 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.character_interface;
-import com.mygdx.game.codeParser;
+
+import java.util.List;
 
 public class character implements character_interface {
     private com.badlogic.gdx.graphics.g2d.Animation <TextureRegion>
@@ -16,18 +18,21 @@ public class character implements character_interface {
             attackTop, attackDown,attackLeft,attackRight,
             deadAnimation,state;
     private Texture characterTexture, attackTexture,deadTexture;
-    private int x,y, nextX, nextY,steps;
+    private int x, y, nextX, nextY, prevX, prevY, steps;
     private float width,height,gameTime;
     private String currentCommand,enemyTarget;
-    private com.mygdx.game.codeParser codeParser;
     public boolean isRunning,isBlocked,attack;
     private Rectangle hitBox,attackHitBox;
-
+    private int[][] enemyPositions;
+    private String[] enemyNames,enemyDirection;
+    private List<Boolean> enemyDead;
+    private com.mygdx.game.screens.game game;
+    
     public boolean dead;
 
     private static final float speed = 1;
 
-    public character(int x, int y){
+    public character(int x, int y, com.mygdx.game.screens.game game){
         characterTexture = new Texture(Gdx.files.internal("characters.png"));
         attackTexture = new Texture(Gdx.files.internal("characterAttack.png"));
         deadTexture = new Texture(Gdx.files.internal("$dead.png"));
@@ -53,8 +58,9 @@ public class character implements character_interface {
         this.height = 32;
         this.x = x;
         this.y = y;
-
-        hitBox = new Rectangle(x,y,32,16);
+        this.game = game;
+        
+        hitBox = new Rectangle(x+6,y,20,12);
         attackHitBox = new Rectangle(x,y,32,32);
 
         this.steps = 32*3;
@@ -62,14 +68,24 @@ public class character implements character_interface {
         nextX = x;
         nextY = y;
         currentCommand = "down";
+        enemyTarget = "";
+        
         isRunning = false;
         isBlocked = false;
         attack = false;
         dead = false;
     }
-
-    public void setCodeParser(codeParser codeParser){this.codeParser = codeParser;}
-
+    
+    public void setEnemyPositions(int[][] list){this.enemyPositions = list;}
+    
+    public void setEnemyNames(String[] list){this.enemyNames = list;}
+    
+    public void setEnemyDirection(String[] enemyDirection) {
+        this.enemyDirection = enemyDirection;
+    }
+    
+    public void setEnemyDead(List<Boolean> list){enemyDead = list;}
+    
     private TextureRegion[] characterFrames(TextureRegion[][] tmp, int x){
         TextureRegion[] frames = new TextureRegion[2];
         int index = 0;
@@ -93,13 +109,13 @@ public class character implements character_interface {
         this.height = 32;
         this.x = x;
         this.y = y;
-        hitBox = new Rectangle(x,y,32,16);
+        hitBox = new Rectangle(x+6,y,20,12);
         attackHitBox = new Rectangle(x,y,32,16);
         gameTime = 0;
         nextX = x;
         nextY = y;
         currentCommand = "down";
-        isRunning = false;
+        enemyTarget = "";
         isBlocked = false;
         attack = false;
         dead = false;
@@ -126,7 +142,6 @@ public class character implements character_interface {
     public void run(){
         nextX = x;
         nextY = y;
-        codeParser.nextLine();
     }
 
     public void draw(SpriteBatch batch,float time){
@@ -174,21 +189,20 @@ public class character implements character_interface {
                 }
             }
             if (attack){
-                Gdx.app.log("",""+attackHitBox.y);
                 if (currentCommand.equals("up")){
                     attackHitBox.x = x;
-                    attackHitBox.y += (32*2/state.getAnimationDuration());
+                    attackHitBox.y = y+32;
                 }
                 else if (currentCommand.equals("down")){
                     attackHitBox.x = x;
-                    attackHitBox.y -= (32*2/state.getAnimationDuration());
+                    attackHitBox.y = y-32;
                 }
                 else if (currentCommand.equals("left")){
-                    attackHitBox.x -= (32*2/state.getAnimationDuration());
+                    attackHitBox.x = x-32;
                     attackHitBox.y = y;
                 }
                 else if (currentCommand.equals("right")){
-                    attackHitBox.x += (32*2/state.getAnimationDuration());
+                    attackHitBox.x = x+32;
                     attackHitBox.y = y;
                 }
             }
@@ -198,7 +212,12 @@ public class character implements character_interface {
         }
     }
     
+    double distance(float x, float y){
+        return Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2));
+    }
+    
     // CHARACTER MOVEMENTS
+    
     
     public void moveUp(){
         gameTime = 0;
@@ -232,11 +251,48 @@ public class character implements character_interface {
         currentCommand = "left";
         while (nextX!=x){}
     }
-
+    
     public void attack(String name){
-        attack = true;
-        gameTime = 0;
         enemyTarget = name;
+        prevX = x;
+        prevY = y;
+        int targetX=0,targetY=0;
+        String direction="";
+        for (int a = 0 ; a != enemyNames.length ; a++){
+            if (enemyNames[a].equals(name)){
+                targetX = enemyPositions[a][0]*16;
+                targetY = enemyPositions[a][1]*16;
+                direction = enemyDirection[a];
+                break;
+            }
+        }
+        
+        if (direction.equals("left")){
+            nextX = targetX-32;
+            nextY = targetY;
+            currentCommand = "right";
+            state = rightWalkAnimation;
+        }
+        else if (direction.equals("right")){
+            nextX = targetX+32;
+            nextY = targetY;
+            currentCommand = "left";
+            state = leftWalkAnimation;
+        }
+        else if (direction.equals("up")){
+            nextY = targetY+32;
+            nextX = targetX;
+            currentCommand = "down";
+            state = downWalkAnimation;
+        }
+        else if (direction.equals("down")){
+            nextY = targetY-32;
+            nextX = targetX;
+            currentCommand = "up";
+            state = upWalkAnimation;
+        }
+        while (nextX!=x || nextY!=y){}
+        attack = true;
         if (currentCommand.equals("up")){
             state = attackTop;
         }
@@ -249,8 +305,24 @@ public class character implements character_interface {
         else if (currentCommand.equals("right")){
             state = attackRight;
         }
-        while (!state.isAnimationFinished(gameTime)){
+        gameTime = 0;
+        while (!state.isAnimationFinished(gameTime)){}
+        if (currentCommand.equals("up")){
+            state = downWalkAnimation;
         }
+        else if(currentCommand.equals("right")){
+            state = leftWalkAnimation;
+        }
+        else if(currentCommand.equals("down")){
+            state = upWalkAnimation;
+        }
+        else if(currentCommand.equals("left")){
+            state = rightWalkAnimation;
+        }
+        attack = false;
+        nextX = prevX;
+        nextY = prevY;
+        while (nextX!=x || nextY!=y){}
         if (currentCommand.equals("up")){
             state = upIdleAnimation;
         }
@@ -263,7 +335,31 @@ public class character implements character_interface {
         else if(currentCommand.equals("left")){
             state = leftIdleAnimation;
         }
-        attack = false;
     }
-
+    
+    public String findNearestEnemy(){
+        String nearestEnemy = null;
+        double distance = distance(enemyPositions[0][0]*16, enemyPositions[0][1]*16);
+        for (int x = 0 ; x != enemyPositions.length ; x++ ){
+            if (distance(enemyPositions[x][0]*16, enemyPositions[x][1]*16) <= distance &&
+                !(game.getEnemy()[x]).dead){
+                nearestEnemy = enemyNames[x];
+                distance = distance(enemyPositions[x][0]*16, enemyPositions[x][1]*16);
+            }
+        }
+        return nearestEnemy;
+    }
+    
+    public boolean enemy(){
+        float range = 32*3;
+        for (int x = 0 ; x != enemyPositions.length ; x++ ){
+            if (Math.abs(this.x-(enemyPositions[x][0])*16) <= range &&
+                Math.abs(y-(enemyPositions[x][1])*16) <= range &&
+                !(game.getEnemy()[x]).dead){
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

@@ -37,7 +37,6 @@ public class PopUp {
         halfHeight = Gdx.graphics.getHeight()/2;
         buttonWidth = Gdx.graphics.getWidth()*0.1f;
         buttonHeight = buttonWidth*aspectRatio;
-//        closeTexture = new Texture(Gdx.files.internal(""));
         nextTexture = new Texture(Gdx.files.internal("ui/BUTTON-NEXT.png"));
         levelTexture = new Texture(Gdx.files.internal("ui/BUTTON-LEVEL.png"));
         victoryTexture = new Texture(Gdx.files.internal("ui/VICTORY PROMT.png"));
@@ -46,11 +45,33 @@ public class PopUp {
 
         errorButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(errorTexture)));
         errorButton.setBounds(Gdx.graphics.getWidth()*0.05f, Gdx.graphics.getHeight()*0.1f,halfWidth,halfHeight);
-
+        errorButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+    
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                game.setError(false);
+            }
+        });
+        
         errorText = new Label(null,game.getSkin());
         errorText.setBounds(Gdx.graphics.getWidth()*0.1f, Gdx.graphics.getHeight()*0.1f,halfWidth/2,halfHeight/2); //to be fix
         errorText.setWrap(true);
-
+        errorText.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+    
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                game.setError(false);
+            }
+        });
+        
         nextLevel = new ImageButton(new TextureRegionDrawable(new TextureRegion(nextTexture)));
         nextLevel.setBounds(halfWidth+(buttonWidth*0.2f),Gdx.graphics.getHeight()*0.2f-(buttonHeight),buttonWidth,buttonHeight);
         nextLevel.addListener(new ClickListener(){
@@ -108,5 +129,5 @@ public class PopUp {
     public Stage getStage(){return stage;}
 
     public ImageButton getErrorButton(){return errorButton;}
-
+    
 }

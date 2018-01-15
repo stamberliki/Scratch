@@ -5,37 +5,42 @@
  <tileset firstgid="1729" source="3.tsx"/>
  <layer name="Tile Layer 1" width="16" height="48">
   <data encoding="base64" compression="zlib">
-   eJztzbERACAIADEK59FNcP9tZAWwTfH3ZXJF3CqH39X5+NTl8/l8Pp/P5/P5/T/SjMeB
+   eJzzY2Fg8AdiPzJpPSDWp4Am195R+0ftH7V/1P5R+0ftH7V/1P5R+0ftH4r2DzQAAG5uvzE=
   </data>
  </layer>
  <layer name="Tile Layer 2" width="16" height="48">
   <data encoding="base64" compression="zlib">
-   eJztkl0KgzAQhNf2ZLa9iLUXMe1F+nOyehF3wYBEdxwCfSjswDAPUb5kd0RCobVOs88gL+qrugeJzm7qpL6DRGcPcP/X7HeRqeB7+qrHjexI/qEROTbrHEh+K9tzTyS/k/3dIP4g+7th+fZ9uQfLD8m3e3r7YPh2T28fDN/S6z/Dr5n/U/z+LufiKfob/Y3+Rn8z75/7i+bE8Gv+X/YXzRkp82uV3/9LTT1epB0=
+   eJztVFEOwiAMhXkzt4sIXkTmSdST6UUsCSRNZ7sC0UjCS17eB6yvtC8zZuAfcUycBV2ADugFlc7OwABcBZXOrkL/t8Q70UD8OTyBrw96UvpP1piD3epF6c/NPyj9tfPn0Dp/7B/v0z1EfSj9Y5/cPjT+sU9uH3v+uQaXf8kfv+HX8x/57zv/+fva/OP81uTfkRql+aezGvnvK/84fz3+/z1iTf5XROmdWv/SGtS/pYdaZP9v4g3Aoq8z
   </data>
  </layer>
  <layer width="16" height="48">
   <data encoding="base64" compression="zlib">
-   eJztloEJwjAQRS/qJOoiVhcxOkl1kuok6iTqIN5Rj34ChguxRCSBxw+hvz9pr+U8Ee0Y/1ZhT/bRMgdQ4Zjg19xS+R1zAhXOCf4LcwUVbgn+O/MAFZ4J/okjmrpBhZmz++d87cINKiwT/KVHw6xBhU2Cv3T9fcpvMvPbzHyrv+aPk99l5lvHWPVvrd9fff41Py/fWr/1//uf7//b+WGfpRrz61rMH9u/rskI+zRVzNW5eLAHWVFfT9ir6Bw9eBb8BrbB/T3Mcd/hWTQnXMezvQAbQ6KC
+   eJztllEKwkAMRLPWk6gXaetFXD1J9STqSdSTqAcxA106BIQNftSPLDwmlM5OAvuRLCJ7JY8KDlJ/BuVICk4O/1m5kIKrw39T7qTg4fA/lRcpeDv8iyTSpEnBMtX7V/rvOk0KNg7/3KdTelKwdfjLu5vr/UV+5Ed+5Ed+5Ef+93y7ZxX91V/bv93Tiv5LPveAO7ADdSMt1b2p2cOz8Aw7c3+mmvu2s5Qc+32g+gM6xJ3k
+  </data>
+ </layer>
+ <layer name="top" width="16" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztwQEBAAAAgiD/r25IQAEAAC8GDAAAAQ==
   </data>
  </layer>
  <objectgroup name="blockObj">
-  <object id="1" x="-11.6667" y="121.667" width="106.333" height="21"/>
-  <object id="3" x="84" y="111.667" width="181.667" height="15.5"/>
-  <object id="5" x="-19.5" y="134" width="19" height="61"/>
-  <object id="6" x="-11.6665" y="177.5" width="106.333" height="21"/>
-  <object id="7" x="87.5" y="192.5" width="103.5" height="30.5"/>
-  <object id="8" x="160.25" y="288.75" width="106.5" height="30.5"/>
-  <object id="9" x="85.25" y="368.25" width="106" height="30.5"/>
-  <object id="10" x="161.25" y="465.75" width="106" height="30.5"/>
-  <object id="11" x="83.25" y="544.25" width="109" height="30.5"/>
-  <object id="12" x="160.25" y="641.25" width="98.5" height="94"/>
-  <object id="14" x="256.5" y="105" width="25" height="550.5"/>
-  <object id="15" x="68" y="216.75" width="25" height="517.5"/>
-  <object id="16" x="90.25" y="721.25" width="19.75" height="35.75"/>
-  <object id="17" x="145.25" y="721" width="21.5" height="33.5"/>
-  <object id="18" x="95.25" y="753" width="72.25" height="13.75"/>
+  <object id="1" x="-11.6667" y="89.667" width="106.333" height="21"/>
+  <object id="3" x="84" y="79.667" width="181.667" height="15.5"/>
+  <object id="5" x="-19.5" y="102" width="19" height="61"/>
+  <object id="6" x="-11.6665" y="145.5" width="106.333" height="21"/>
+  <object id="7" x="87.5" y="160.5" width="103.5" height="30.5"/>
+  <object id="8" x="160.25" y="256.75" width="106.5" height="30.5"/>
+  <object id="9" x="84.9167" y="352.795" width="106" height="30.5"/>
+  <object id="10" x="160.25" y="449.295" width="106" height="30.5"/>
+  <object id="11" x="82.5833" y="545.129" width="109" height="30.5"/>
+  <object id="12" x="159.917" y="641.129" width="98.5" height="94"/>
+  <object id="14" x="256.5" y="73" width="25" height="550.5"/>
+  <object id="15" x="68" y="184.75" width="25" height="550"/>
+  <object id="16" x="91.0833" y="720.667" width="19.75" height="35.75"/>
+  <object id="17" x="146.083" y="720.417" width="21.5" height="33.5"/>
+  <object id="18" x="96.0833" y="752.417" width="72.25" height="13.75"/>
  </objectgroup>
  <objectgroup name="finishBlock">
-  <object id="19" x="113.333" y="689" width="29.3333" height="30"/>
+  <object id="19" x="112.916" y="689.417" width="29.3333" height="30"/>
  </objectgroup>
 </map>

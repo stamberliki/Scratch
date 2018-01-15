@@ -25,6 +25,11 @@
    eJxjYKAdaOVmYGjjpo3Zc4HmzqOR2cMd9DIzMPQx08bstUBz19HI7MEA6JWmR/PO0AS8wLTPR6P0rws0V4/GeWs4pDsA6AgMzQ==
   </data>
  </layer>
+ <layer name="top" width="23" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjIJRMAqGBwAABtQAAQ==
+  </data>
+ </layer>
  <objectgroup name="blockObj">
   <object id="1" x="0.125" y="108.75" width="239.375" height="19.25"/>
   <object id="2" x="0" y="161.879" width="191.636" height="13.9394"/>
