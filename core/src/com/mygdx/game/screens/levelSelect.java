@@ -1,6 +1,7 @@
 package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,6 +38,8 @@ public class levelSelect implements Screen {
     private Screen prevScreen,thisScreen;
     private com.mygdx.game.jsonParser jsonParser;
     private ShapeRenderer shapeRenderer;
+    private Preferences audioPref;
+    private ImageButton muteButton;
 
     private float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
     private float backWidth = Gdx.graphics.getWidth()*0.1f;
@@ -44,7 +47,7 @@ public class levelSelect implements Screen {
     private float backX = Gdx.graphics.getWidth()*0.03f;
     private float backY = Gdx.graphics.getHeight()*0.95f-backHeight;
     private float levelWidth = Gdx.graphics.getWidth()*0.6f;
-    private float levelHeight = Gdx.graphics.getHeight()*0.3f;
+    private float levelHeight = Gdx.graphics.getHeight()*0.4f;
 
     public levelSelect(tess_interface tess,MyGdxGame game,Screen prevScreen){
         this.tess = tess;
@@ -67,18 +70,55 @@ public class levelSelect implements Screen {
         skin = game.getSkin();
         jsonParser = new jsonParser("levelSelection.json");
         shapeRenderer = new ShapeRenderer();
+        audioPref = game.getAudioManager().getPreferences();
 
         backgroundTexture = new Texture(Gdx.files.internal("bg.jpg"));
         backTexture = new Texture(Gdx.files.internal("ui/BUTTON-BACK.png"));
         levelSelectTexture = new Texture(Gdx.files.internal("ui/TEXT-LEVEL-SELECT.png"));
-
+    
+        TextureRegionDrawable muteTexture = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/speaker_mute.png"))));
+        TextureRegionDrawable unMuteTexture = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/speaker_unmute.png"))));
+    
+        muteButton = new ImageButton(unMuteTexture, null, muteTexture);
+        if (audioPref.getBoolean("menuAudioOn")){
+            muteButton.setChecked(false);
+        }
+        else{
+            muteButton.setChecked(true);
+        }
+        muteButton.setBounds((screenWidth-(screenHeight*0.1f))*0.95f,screenHeight*0.1f, screenHeight*0.1f, screenHeight*0.1f);
+        muteButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (audioPref.getBoolean("menuAudioOn")){
+                    game.getAudioManager().getMenuMusic().setVolume(0);
+                    audioPref.putBoolean("menuAudioOn",false);
+                    muteButton.setChecked(true);
+                }
+                else{
+                    game.getAudioManager().getMenuMusic().setVolume(1);
+                    audioPref.putBoolean("menuAudioOn",true);
+                    muteButton.setChecked(false);
+                }
+                audioPref.flush();
+            }
+        });
+        
         backBtn = new ImageButton(new TextureRegionDrawable(new TextureRegion(backTexture)));
         backBtn.setBounds(backX,backY,backWidth,backHeight);
         backBtn.addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 dispose();
-                game.setScreen(prevScreen);
+                if (prevScreen != null)
+                    game.setScreen(prevScreen);
+                else
+                    game.setScreen(new mainMenu(tess,game));
             }
         });
 
@@ -102,20 +142,22 @@ public class levelSelect implements Screen {
             Table levelTable = new Table();
             Image image = new Image(new Texture(Gdx.files.internal("ui/lvl"+ x +".png")));
             description = new Label(jsonParser.getJson(Integer.toString(x)).getString("description"),skin);
+            description.setSize(levelWidth*0.3f, levelHeight);
+            description.setWrap(true);
             stageName = new Label(jsonParser.getJson(Integer.toString(x)).getString("name"),skin);
             stageName.setFontScale(Gdx.graphics.getDensity()*1.2f);
             x++;
             levelTable.row();
-            levelTable.add(stageName).expand().pad(0,0,levelHeight*0.1f,0).fill();
+            levelTable.add(stageName).expand().pad(0,0,levelHeight*0.05f,0).fill();
             levelTable.row();
             levelTable.add(image).width(levelWidth).height(levelHeight);
             levelTable.row();
-            levelTable.add(buttons).height(levelHeight*0.15f).width(levelWidth*0.3f)
-                    .pad(-(levelHeight*0.25f),0,levelHeight*0.1f,levelWidth*0.05f).right();
+            levelTable.add(buttons).height(levelHeight*0.2f).width(levelWidth*0.35f)
+                    .pad(-(levelHeight*0.3f),0,levelHeight*0.1f,levelWidth*0.05f).right();
             levelTable.row();
-            levelTable.add(description).pad(-(levelHeight*1.45f),(levelWidth*0.2f),0,0).expand();
+            levelTable.add(description).pad(-(levelHeight*0.95f),levelWidth*0.5f,0,levelWidth*0.1f).expand().fillX().top();
             scrollTable.row();
-            scrollTable.add(levelTable).expandX().fillX().pad(0,0,Gdx.graphics.getHeight()*0.1f,0);
+            scrollTable.add(levelTable).expandX().fillX().pad(0,0,Gdx.graphics.getHeight()*0.05f,0);
         }
 
         ScrollPane scrollPane = new ScrollPane(scrollTable);
@@ -125,6 +167,7 @@ public class levelSelect implements Screen {
         stage = new Stage();
         stage.addActor(scrollPane);
         stage.addActor(backBtn);
+        stage.addActor(muteButton);
         Gdx.input.setInputProcessor(stage);
     }
 

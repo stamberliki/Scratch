@@ -35,7 +35,7 @@ public class PopUp {
         aspectRatio = Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         halfWidth = Gdx.graphics.getWidth()/2;
         halfHeight = Gdx.graphics.getHeight()/2;
-        buttonWidth = Gdx.graphics.getWidth()*0.1f;
+        buttonWidth = Gdx.graphics.getWidth()*0.15f;
         buttonHeight = buttonWidth*aspectRatio;
         nextTexture = new Texture(Gdx.files.internal("ui/BUTTON-NEXT.png"));
         levelTexture = new Texture(Gdx.files.internal("ui/BUTTON-LEVEL.png"));
@@ -58,7 +58,7 @@ public class PopUp {
         });
         
         errorText = new Label(null,game.getSkin());
-        errorText.setBounds(Gdx.graphics.getWidth()*0.1f, Gdx.graphics.getHeight()*0.1f,halfWidth/2,halfHeight/2); //to be fix
+        errorText.setBounds(Gdx.graphics.getWidth()*0.1f, (Gdx.graphics.getHeight()*0.1f)+(halfHeight*0.9f),halfWidth/2,halfHeight/2); //to be fix
         errorText.setWrap(true);
         errorText.addListener(new ClickListener(){
             @Override
@@ -73,7 +73,7 @@ public class PopUp {
         });
         
         nextLevel = new ImageButton(new TextureRegionDrawable(new TextureRegion(nextTexture)));
-        nextLevel.setBounds(halfWidth+(buttonWidth*0.2f),Gdx.graphics.getHeight()*0.2f-(buttonHeight),buttonWidth,buttonHeight);
+        nextLevel.setBounds(halfWidth+(buttonWidth*0.2f),Gdx.graphics.getHeight()*0.18f,buttonWidth,buttonHeight);
         nextLevel.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -87,7 +87,7 @@ public class PopUp {
         });
 
         levelSelect = new ImageButton(new TextureRegionDrawable(new TextureRegion(levelTexture)));
-        levelSelect.setBounds(halfWidth-(buttonWidth*1.2f),Gdx.graphics.getHeight()*0.2f-(buttonHeight),buttonWidth,buttonHeight);
+        levelSelect.setBounds(halfWidth-(buttonWidth*1.2f),Gdx.graphics.getHeight()*0.18f,buttonWidth,buttonHeight);
         levelSelect.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

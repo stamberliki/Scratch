@@ -13,7 +13,7 @@ public class audioManager {
 
         menuMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/menu.ogg"));
         menuMusic.setLooping(true);
-        preferences.putBoolean("menuAudioOn",false);
+        preferences.putBoolean("menuAudioOn",true);
 
         preferences.flush();
     }

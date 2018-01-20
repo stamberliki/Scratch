@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -24,10 +25,9 @@ public class mainMenu implements Screen{
     private tess_interface tess;
     private MyGdxGame game;
     private Texture backgroundTexture,titleTexture;
-    private ImageButton play,options;
+    private ImageButton play,muteButton;
     private Screen thisScreen;
     private Preferences audioPref;
-
     private int screenWidth = Gdx.graphics.getWidth();
     private int screenHeight = Gdx.graphics.getHeight();
     private float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
@@ -61,15 +61,37 @@ public class mainMenu implements Screen{
                 game.setScreen(new levelSelect(tess,game,thisScreen));
             }
         });
-
-        options = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/BUTTON-SETTINGS.png")))));
-        options.setBounds(screenWidth*0.01f,screenHeight*0.90f,
-                screenWidth*0.08f,screenHeight*0.08f);
-        options.addListener(new ClickListener(){
+    
+        TextureRegionDrawable muteTexture = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/speaker_mute.png"))));
+        TextureRegionDrawable unMuteTexture = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/speaker_unmute.png"))));
+        
+        muteButton = new ImageButton(unMuteTexture, null, muteTexture);
+        if (audioPref.getBoolean("menuAudioOn")){
+            muteButton.setChecked(false);
+        }
+        else{
+            muteButton.setChecked(true);
+        }
+        muteButton.setBounds((screenWidth-(screenHeight*0.1f))*0.95f,screenHeight*0.1f, screenHeight*0.1f, screenHeight*0.1f);
+        muteButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                dispose();
-                game.setScreen(new options(thisScreen,game));
+                if (audioPref.getBoolean("menuAudioOn")){
+                    game.getAudioManager().getMenuMusic().setVolume(0);
+                    audioPref.putBoolean("menuAudioOn",false);
+                    muteButton.setChecked(true);
+                }
+                else{
+                    game.getAudioManager().getMenuMusic().setVolume(1);
+                    audioPref.putBoolean("menuAudioOn",true);
+                    muteButton.setChecked(false);
+                }
+                audioPref.flush();
             }
         });
 
@@ -77,14 +99,13 @@ public class mainMenu implements Screen{
         
         titleHeight = titleWidth*((float)titleTexture.getHeight()/(float)titleTexture.getWidth());
         
-        if (!audioPref.getBoolean("menuAudioOn")){
+        if (audioPref.getBoolean("menuAudioOn")){
             game.getAudioManager().getMenuMusic().play();
-            audioPref.putBoolean("menuAudioOn",true);
             audioPref.flush();
         }
 
         stage.addActor(play);
-        stage.addActor(options);
+        stage.addActor(muteButton);
         Gdx.input.setInputProcessor(stage);
     }
 

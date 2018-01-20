@@ -3,6 +3,7 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -30,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.audioManager;
 import com.mygdx.game.character_interface;
 import com.mygdx.game.entity.PopUp;
 import com.mygdx.game.entity.character;
@@ -65,24 +68,28 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
     private int                           currentLevel;
     private ShapeRenderer                 shapeRenderer;
     private Screen                        prevScreen;
-    private ImageButton                   backBtn;
-    private Texture                       backTexture;
+    private ImageButton                   backBtn, muteButton;
+    private Texture                       backTexture, uiBackground;
     private com.mygdx.game.entity.enemy[] enemy;
     private String                        errorMsg;
     private TiledMapRenderer              topLayer;
     private MapObjects                    objects;
     private List<Boolean>                 enemyDead;
     private gameData                      gameData;
+    private Image goalImage, infoWindowImage;
+    private Preferences audioPref;
     
+    private float screenWidth = Gdx.graphics.getWidth();
+    private float screenHeight = Gdx.graphics.getHeight();
     private final StringBuilder build = new StringBuilder();
-    private float aspectRatio = (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight();
-    private float backWidth = Gdx.graphics.getWidth()*0.1f;
-    private float backHeight = Gdx.graphics.getHeight()*0.1f;
-    private float backX = Gdx.graphics.getWidth()*0.03f;
-    private float backY = Gdx.graphics.getHeight()*0.95f-backHeight;
-    private float buttonWidth = Gdx.graphics.getWidth()*0.1f;
+    private float aspectRatio = screenWidth/screenHeight;
+    private float backWidth = screenWidth*0.1f;
+    private float backHeight = screenHeight*0.1f;
+    private float backX = screenWidth*0.03f;
+    private float backY = screenHeight*0.95f-backHeight;
+    private float buttonWidth = screenWidth*0.1f;
     private float buttonHeight = buttonWidth/aspectRatio;
-
+    
     public game(tess_interface tess,MyGdxGame game,Screen prevScreen,int mapLevel){
         this.tess = tess;
         this.game = game;
@@ -93,7 +100,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         res = jsonParser.getJson(Integer.toString(mapLevel));
         Map = new com.mygdx.game.entity.map("level"+mapLevel+".tmx");
     }
-
+    
     public void reInitialize(){
         character.reInitialize(gameData.heroPosition[0]*16,gameData.heroPosition[1]*16);
         for (int x = 0; x != gameData.noOfCoin ; x++){
@@ -103,13 +110,16 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
             enemy[x].reInitialize(gameData.enemyPositions[x][0]*16, gameData.enemyPositions[x][1]*16);
         }
     }
-
+    
     public void newGame(int level){
+        game.getAudioManager().getGameMusic().stop();
         this.dispose();
         game.setScreen(new game(tess,game,prevScreen,level));
     }
-
+    
     public void levelSelect(){
+        game.getAudioManager().getGameMusic().stop();
+        game.getAudioManager().getMenuMusic().play();
         this.dispose();
         game.setScreen(new levelSelect(tess,game));
     }
@@ -123,7 +133,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
     }
     
     public Skin getSkin(){return skin;}
-
+    
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
@@ -135,13 +145,49 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         character = new character(gameData.heroPosition[0]*16, gameData.heroPosition[1]*16, this);
         hero = character;
         isAlreadyRunning = false;
-
-        game.getAudioManager().setGameMusic(gameData.musicName);
-        game.getAudioManager().getGameMusic().setLooping(true);
-        game.getAudioManager().getGameMusic().play();
-
+        audioPref = game.getAudioManager().getPreferences();
+        audioManager audioManager = game.getAudioManager();
+    
+        TextureRegionDrawable muteTexture = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/speaker_mute.png"))));
+        TextureRegionDrawable unMuteTexture = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/speaker_unmute.png"))));
+        muteButton = new ImageButton(unMuteTexture, null, muteTexture);
+        
+        audioManager.setGameMusic(gameData.musicName);
+        audioManager.getGameMusic().setLooping(true);
+        audioManager.getGameMusic().play();
+        if (audioPref.getBoolean("menuAudioOn")){
+            audioManager.getGameMusic().setVolume(1);
+            muteButton.setChecked(false);
+        }
+        else{
+            audioManager.getGameMusic().setVolume(0);
+            muteButton.setChecked(true);
+        }
+        
+        muteButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (audioPref.getBoolean("menuAudioOn")){
+                    game.getAudioManager().getGameMusic().setVolume(0);
+                    audioPref.putBoolean("menuAudioOn",false);
+                    muteButton.setChecked(true);
+                }
+                else{
+                    game.getAudioManager().getGameMusic().setVolume(1);
+                    audioPref.putBoolean("menuAudioOn",true);
+                    muteButton.setChecked(false);
+                }
+                audioPref.flush();
+            }
+        });
+    
         backTexture = new Texture(Gdx.files.internal("ui/BUTTON-BACK.png"));
-
+        
         backBtn = new ImageButton(new TextureRegionDrawable(new TextureRegion(backTexture)));
         backBtn.setBounds(backX,backY,backWidth,backHeight);
         backBtn.addListener(new ClickListener(){
@@ -153,12 +199,12 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
                 game.setScreen(prevScreen);
             }
         });
-
+        
         coin = new coin[gameData.noOfCoin];
         for (int x = 0; x != gameData.noOfCoin ; x++){
             coin[x] = new coin(gameData.coinPositions[x][0]*16, gameData.coinPositions[x][1]*16);
         }
-
+        
         enemy = new enemy[gameData.noOfEnemy];
         for (int x = 0; x != gameData.noOfEnemy ; x++){
             enemy[x] = new enemy(gameData.enemyPositions[x][0]*16, gameData.enemyPositions[x][1]*16,0,9,gameData.enemyDirection[x],gameData.enemyNames[x],skin);
@@ -167,7 +213,8 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         character.setEnemyNames(gameData.enemyNames);
         character.setEnemyDirection(gameData.enemyDirection);
         
-        code.setBounds((Gdx.graphics.getWidth()/2)*1.30f,Gdx.graphics.getHeight()*0.15f,(Gdx.graphics.getWidth()/2)*0.65f,Gdx.graphics.getHeight()*0.7f);
+        code.setBounds((screenWidth/2)*1.30f,screenHeight*0.15f,(screenWidth/2)*0.65f,screenHeight*0.7f);
+        code.setText(gameData.codes);
         code.setFocusTraversal(false);
         code.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
@@ -179,7 +226,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         });
         
         runCode = new TextButton("Run",skin);
-        runCode.setBounds(((Gdx.graphics.getWidth())-(buttonWidth))*0.9f,Gdx.graphics.getHeight()*0.03f,buttonWidth,buttonHeight);
+        runCode.setBounds(((screenWidth)-(buttonWidth))*0.9f,screenHeight*0.03f,buttonWidth,buttonHeight);
         runCode.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -197,16 +244,11 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
                         @Override
                         public void run() {
                             try {
-                                if (tess.runCode("hero.moveRight();" +
-                                    "hero.moveUp();" +
-                                    "if(hero.enemy()){hero.attack(hero.findNearestEnemy());}hero.moveUp();" +
-                                    "hero.moveRight();" +
-                                    "if(hero.enemy()){hero.attack(hero.findNearestEnemy());}hero.moveRight();" +
-                                    "hero.moveDown();hero.moveDown();if(hero.enemy()){hero.attack(hero.findNearestEnemy());}hero.moveDown();", hero)){  //run code
+                                if (tess.runCode(code.getText(), hero)){  //run code
                                     character.isRunning = false;
                                 }
                             } catch (Exception e) {
-                                errorMsg = "Code error";
+                                errorMsg = "Fix your code.\nSomethings not right...";
                                 error = true;
                                 character.isRunning = false;
                             }
@@ -217,8 +259,78 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         });
         
         pictureBtn = new TextButton("OCR",skin);
-        pictureBtn.setBounds((runCode.getX())-(buttonWidth)*1.1f,Gdx.graphics.getHeight()*0.03f,buttonWidth,buttonHeight);
+        pictureBtn.setBounds((runCode.getX())-(buttonWidth)*1.1f,screenHeight*0.03f,buttonWidth,buttonHeight);
         pictureBtn.addListener(tess.setGallerySelect());
+        
+        uiBackground = new Texture(Gdx.files.internal("ui/ui_background.png"));
+        Image image = new Image(uiBackground);
+        image.setBounds((screenWidth/2)*1.25f,0,(screenWidth/2)*0.75f,screenHeight);
+        
+        Texture helpTexture = new Texture(Gdx.files.internal("ui/help.png"));
+        Image helpImage = new Image(helpTexture);
+        helpImage.setBounds(screenWidth-(screenHeight*0.12f), screenHeight-(screenHeight*0.1f),screenHeight*0.08f, screenHeight*0.08f);
+        helpImage.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                goalImage.setVisible(true);
+            }
+        });
+        
+        Texture goalTexture = new Texture(Gdx.files.internal("ui/goals/goalLevel"+currentLevel+".png"));
+        goalImage = new Image(goalTexture);
+        float goalHeight = screenHeight*0.9f;
+        float goalWidth = ((float)goalTexture.getWidth()/(float)goalTexture.getHeight())*goalHeight;
+        goalImage.setBounds((screenWidth/2)-(goalWidth/2), screenHeight*0.05f, goalWidth, goalHeight);
+        goalImage.setVisible(true);
+        goalImage.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                goalImage.setVisible(false);
+            }
+        });
+        
+        Texture infoTexture = new Texture(Gdx.files.internal("ui/info.png"));
+        Image infoImage = new Image(infoTexture);
+        infoImage.setBounds((helpImage.getX()-helpImage.getWidth())*0.9f, helpImage.getY(), helpImage.getWidth(), helpImage.getHeight());
+        infoImage.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                infoWindowImage.setVisible(true);
+            }
+        });
+        
+        muteButton.setBounds((infoImage.getX()-infoImage.getWidth())*0.9f,infoImage.getY(), infoImage.getWidth(), infoImage.getHeight());
+        
+        Texture infoWindowTexture = new Texture(Gdx.files.internal("ui/hints/hintLevel"+currentLevel+".png"));
+        infoWindowImage = new Image(infoWindowTexture);
+        float infoWindowHeight = Gdx.graphics.getHeight()*0.5f;
+        float infoWindowWidth = infoWindowHeight*((float)infoWindowTexture.getWidth()/(float)infoWindowTexture.getHeight());
+        infoWindowImage.setBounds(screenWidth/2-(infoWindowWidth/2), screenHeight/2-(infoWindowHeight/2), infoWindowWidth, infoWindowHeight);
+        infoWindowImage.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                infoWindowImage.setVisible(false);
+            }
+        });
+        infoWindowImage.setVisible(false);
         
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -231,9 +343,9 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
             camera.viewportHeight = camera.viewportWidth/aspectRatio;
         }
         camera.position.set((character.getX() + camera.viewportWidth / 6) + 16, character.getY() + 16, 0);
-
+        
         camera.update();
-
+        
         currentZoom = camera.zoom;
         mapCurrentZoom = Map.getCamera().zoom;
         
@@ -245,12 +357,18 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         topLayer = new OrthogonalTiledMapRenderer(tiledMap);
         
         popUp = new PopUp(this,currentLevel);
-
+        
+        stage.addActor(image);
+        stage.addActor(helpImage);
         stage.addActor(code);
         stage.addActor(pictureBtn);
         stage.addActor(runCode);
         stage.addActor(backBtn);
-
+        stage.addActor(goalImage);
+        stage.addActor(muteButton);
+        stage.addActor(infoImage);
+        stage.addActor(infoWindowImage);
+        
         GestureDetector gd = new GestureDetector(this);
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
@@ -258,36 +376,36 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         inputMultiplexer.addProcessor(gd);
         inputMultiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(inputMultiplexer);
-
+        
         conditions = new conditions(gameData);
     }
-
+    
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(17, 10, 10, -1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
-
+        
         if(character.isRunning ) {
             camera.position.set((character.getX() + camera.viewportWidth*currentZoom / 6) + 16, character.getY() + 16, 0);
         }
-
+        
         checkEdgeTouch();
         camera.update();
         batch.setProjectionMatrix(camera.combined);
-
+        
         if (gameData.hasTiledAnimation)
             if ((int)elapsedTime%2>0)
                 Map.getMap().getLayers().get("animation").setVisible(false);
             else
                 Map.getMap().getLayers().get("animation").setVisible(true);
-
+        
         Map.setX(camera.position.x);
         Map.setY(camera.position.y);
         Map.draw();
-
+        
         batch.begin();
-
+        
         // Gem
         for (com.mygdx.game.entity.coin coinLocation : coin){
             if (Intersector.overlaps(coinLocation.getHitBox(),character.getHitBox()) && !coinLocation.isCollide ){
@@ -296,7 +414,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
             }
             coinLocation.draw(batch,elapsedTime);
         }
-
+        
         // Enemy
         for (com.mygdx.game.entity.enemy enemyLocation : enemy){
             if (!enemyLocation.dead){
@@ -318,7 +436,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
             }
             enemyLocation.draw(batch,elapsedTime);
         }
-    
+        
         //Blocked by obstacles
         if (!character.isBlocked) {
             objects = Map.getMap().getLayers().get("blockObj").getObjects();
@@ -343,7 +461,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
                 }
             }
         }
-
+        
         character.draw(batch,elapsedTime);
         
         batch.end();
@@ -374,7 +492,7 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(0,0,0,0.6f);
-            shapeRenderer.rect(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+            shapeRenderer.rect(0,0,screenWidth,screenHeight);
             shapeRenderer.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             batch.begin();
@@ -382,60 +500,60 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
             batch.end();
             popUp.getStage().draw();
         }
-
+        
     }
-
+    
     @Override
     public void resize(int width, int height) {
-
+    
     }
-
+    
     @Override
     public void pause() {
-
+    
     }
-
+    
     @Override
     public void resume() {
         if (!tess.getCode().isEmpty()){
             code.setText(tess.getCode());
             tess.setCodeOCR("");
         }
-
+        
     }
-
+    
     @Override
     public void hide() {
-
+    
     }
-
+    
     @Override
     public void dispose() {
         this.batch.dispose();
         this.stage.dispose();
         Map.getMap().dispose();
     }
-
+    
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         return false;
     }
-
+    
     @Override
     public boolean tap(float x, float y, int count, int button) {
         return false;
     }
-
+    
     @Override
     public boolean longPress(float x, float y) {
         return true;
     }
-
+    
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         return false;
     }
-
+    
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         camera.translate(-deltaX*currentZoom,deltaY*currentZoom);
@@ -445,27 +563,27 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         checkEdgeTouch();
         return false;
     }
-
+    
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         return false;
     }
-
+    
     @Override
     public boolean zoom(float initialDistance, float distance) {
         return false;
     }
-
+    
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         return true;
     }
-
+    
     @Override
     public void pinchStop() {
-
+    
     }
-
+    
     private void checkEdgeTouch(){
         float halfWidth = camera.viewportWidth*camera.zoom/2;
         float halfHeight = camera.viewportHeight*camera.zoom/2;
@@ -476,43 +594,43 @@ public class game implements Screen,GestureDetector.GestureListener,InputProcess
         if (camera.position.y+(halfHeight) > Map.getMapHeight()) camera.position.y = Map.getMapHeight() - halfHeight;  //top
         camera.update();
     }
-
+    
     @Override
     public boolean keyDown(int keycode) {
         return false;
     }
-
+    
     @Override
     public boolean keyUp(int keycode) {
         return false;
     }
-
+    
     @Override
     public boolean keyTyped(char character) {
         return false;
     }
-
+    
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         return false;
     }
-
+    
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         code.getOnscreenKeyboard().show(false);
         return false;
     }
-
+    
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         return false;
     }
-
+    
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
-
+    
     @Override
     public boolean scrolled(int amount) {
         return false;

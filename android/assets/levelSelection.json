@@ -1,30 +1,30 @@
 {
   1: {
-    name: "stage 1",
-    description: "stage 1",
+    name: "Stage 1",
+    description: "Follow the path. \nGuide your character by simply writing a code.\nMove Towards the entrance.",
   },
   2: {
-    name: "stage 2",
-    description: "stage 2",
+    name: "Stage 2",
+    description: "Follow the path. \nGuide your character by simply writing a code.\nReach the stairs.",
   },
   3: {
-    name: "stage 3",
-    description: "stage 3",
+    name: "Stage 3",
+    description: "You must survive.\nGuide your character by simply writing a code.\nUse the Attack method to attack enemy.",
   },
   4: {
-    name: "stage 4",
-    description: "stage 4",
+    name: "Stage 4",
+    description: "Reach to the next area.\nGuide your character by simply writing the code.\nUse a while-loop statement.",
   },
   5: {
-    name: "stage 5",
-    description: "stage 5",
+    name: "Stage 5",
+    description: "You must survive\nGuide your character by simply writing a code.\nDefeat the three enemies.\nDeclare variables.",
   },
   6: {
-    name: "stage 6",
-    description: "stage 6",
+    name: "Stage 6",
+    description: "Follow the path. \nGuide your character by simply writing a code.\nMove towards the entrance.",
   },
   7: {
-    name: "stage 7",
-    description: "stage 7",
+    name: "Stage 7",
+    description: "You must survive.\nDefeat the guards.\nUse if statements and findNearestEnemy method.",
   }
 }

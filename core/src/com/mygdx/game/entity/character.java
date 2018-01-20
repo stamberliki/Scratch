@@ -224,7 +224,7 @@ public class character implements character_interface {
         nextY = y+steps;
         state = upWalkAnimation;
         currentCommand = "up";
-        while (nextY!=y){}
+        while (nextY!=y && isRunning){}
 
     }
 
@@ -233,7 +233,7 @@ public class character implements character_interface {
         nextY = y-steps;
         state = downWalkAnimation;
         currentCommand = "down";
-        while (nextY!=y){}
+        while (nextY!=y && isRunning){}
     }
 
     public void moveRight(){
@@ -241,7 +241,7 @@ public class character implements character_interface {
         nextX = x+steps;
         state = rightWalkAnimation;
         currentCommand = "right";
-        while (nextX!=x){}
+        while (nextX!=x && isRunning){}
     }
 
     public void moveLeft(){
@@ -249,7 +249,7 @@ public class character implements character_interface {
         nextX = x-steps;
         state = leftWalkAnimation;
         currentCommand = "left";
-        while (nextX!=x){}
+        while (nextX!=x && isRunning){}
     }
     
     public void attack(String name){
@@ -291,7 +291,7 @@ public class character implements character_interface {
             currentCommand = "up";
             state = upWalkAnimation;
         }
-        while (nextX!=x || nextY!=y){}
+        while (nextX!=x || nextY!=y && isRunning){}
         attack = true;
         if (currentCommand.equals("up")){
             state = attackTop;
@@ -322,7 +322,7 @@ public class character implements character_interface {
         attack = false;
         nextX = prevX;
         nextY = prevY;
-        while (nextX!=x || nextY!=y){}
+        while (nextX!=x || nextY!=y && isRunning){}
         if (currentCommand.equals("up")){
             state = upIdleAnimation;
         }
