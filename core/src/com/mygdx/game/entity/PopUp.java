@@ -14,9 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.screens.game;
 
 public class PopUp {
-    private Texture closeTexture,nextTexture,levelTexture, victoryTexture, errorTexture;
+    private static final int SYNTAX_ERROR = 1;
+    private static final int CHARACTER_BLOCK = 2;
+    private static final int CHARACTER_DEAD = 3;
+    
+    private Texture nextTexture,levelTexture, victoryTexture;
     private ImageButton errorButton,nextLevel,levelSelect;
-    private Label errorText;
+    private TextureRegionDrawable errorTexture1, errorTexture2, errorTexture3;
     private int currentLevel;
     private Stage stage;
 
@@ -40,11 +44,14 @@ public class PopUp {
         nextTexture = new Texture(Gdx.files.internal("ui/BUTTON-NEXT.png"));
         levelTexture = new Texture(Gdx.files.internal("ui/BUTTON-LEVEL.png"));
         victoryTexture = new Texture(Gdx.files.internal("ui/VICTORY PROMT.png"));
-        errorTexture = new Texture(Gdx.files.internal("ui/error.png"));
+        errorTexture1 = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/errors/error1.png"))));
+        errorTexture2 = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/errors/error2.png"))));
+        errorTexture3 = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/errors/error3.png"))));
         stage = new Stage();
 
-        errorButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(errorTexture)));
-        errorButton.setBounds(Gdx.graphics.getWidth()*0.05f, Gdx.graphics.getHeight()*0.1f,halfWidth,halfHeight);
+        errorButton = new ImageButton(errorTexture1);
+        errorButton.setBounds(Gdx.graphics.getWidth()*0.05f, Gdx.graphics.getHeight()*0.1f,
+            halfWidth*0.7f,(halfWidth*0.7f)/((float)errorTexture1.getRegion().getTexture().getWidth()/(float)errorTexture1.getRegion().getTexture().getHeight()));
         errorButton.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -54,21 +61,7 @@ public class PopUp {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 game.setError(false);
-            }
-        });
-        
-        errorText = new Label(null,game.getSkin());
-        errorText.setBounds(Gdx.graphics.getWidth()*0.1f, (Gdx.graphics.getHeight()*0.1f)+(halfHeight*0.9f),halfWidth/2,halfHeight/2); //to be fix
-        errorText.setWrap(true);
-        errorText.addListener(new ClickListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-    
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                game.setError(false);
+                errorButton.setVisible(false);
             }
         });
         
@@ -103,17 +96,33 @@ public class PopUp {
         nextLevel.setVisible(false);
         levelSelect.setVisible(false);
         errorButton.setVisible(false);
-        errorText.setVisible(false);
         stage.addActor(nextLevel);
         stage.addActor(levelSelect);
         stage.addActor(errorButton);
-        stage.addActor(errorText);
     }
-
-    public void show(String s){
-        errorText.setText(s);
+    
+    public void unShowAll(){
+        nextLevel.setVisible(false);
+        levelSelect.setVisible(false);
+        errorButton.setVisible(false);
+    }
+    
+    public void show(int i){
+        switch(i){
+            case SYNTAX_ERROR:
+                errorButton.getStyle().imageUp = errorTexture1;
+                errorButton.getStyle().imageDown = errorTexture1;
+                break;
+            case CHARACTER_BLOCK:
+                errorButton.getStyle().imageUp = errorTexture2;
+                errorButton.getStyle().imageDown = errorTexture2;
+                break;
+            case CHARACTER_DEAD:
+                errorButton.getStyle().imageUp = errorTexture3;
+                errorButton.getStyle().imageDown = errorTexture3;
+                break;
+        }
         errorButton.setVisible(true);
-        errorText.setVisible(true);
     }
 
     public void show(SpriteBatch batch,Camera camera){
@@ -127,7 +136,5 @@ public class PopUp {
     }
 
     public Stage getStage(){return stage;}
-
-    public ImageButton getErrorButton(){return errorButton;}
     
 }

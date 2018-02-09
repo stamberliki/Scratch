@@ -81,7 +81,7 @@
     noOfCoin: 0,
     coinPositions: [],
     heroPosition: [0,10],
-    noOfEnemy: 3,
+    noOfEnemy: 2,
     enemyPositions:[[12,16],[12,10]],
     enemyDirection:["left","right",],
     enemyNames:["enemy1","enemy2",],

@@ -82,19 +82,19 @@ public class enemy {
     private void setState(String direction){
         if (direction.equals("up")){
             state = upWalkAnimation;
-            attackHitBox = new Rectangle(x,y+16,32,16);
+            attackHitBox = new Rectangle(x,y+16,32,32);
         }
         else if (direction.equals("down")){
             state = downWalkAnimation;
-            attackHitBox = new Rectangle(x,y-16,32,16);
+            attackHitBox = new Rectangle(x,y-32,32,16);
         }
         else if (direction.equals("left")){
             state = leftWalkAnimation;
-            attackHitBox = new Rectangle(x-16,y,16,32);
+            attackHitBox = new Rectangle(x-32,y,16,32);
         }
         else if (direction.equals("right")){
             state = rightWalkAnimation;
-            attackHitBox = new Rectangle(x+32,y,16,32);
+            attackHitBox = new Rectangle(x+32,y,32,32);
         }
     }
 

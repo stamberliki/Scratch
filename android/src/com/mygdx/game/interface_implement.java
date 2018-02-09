@@ -11,12 +11,17 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.mygdx.game.entity.gameException;
 
+import bsh.EvalError;
 import bsh.Interpreter;
+import bsh.TargetError;
 
 public class interface_implement extends AndroidLauncher implements tess_interface {
     private AndroidApplication app;
@@ -75,13 +80,21 @@ public class interface_implement extends AndroidLauncher implements tess_interfa
 
     @Override
     public String getCode(){return code;}
-
+    
     @Override
-    public boolean runCode(String code, Object o)throws Exception{
+    public boolean runCode(String code, Object o) throws gameException{
         interpreter = new Interpreter();
+        try{
         interpreter.set("hero", o);
         interpreter.eval(code);
+        }
+        catch (TargetError e){
+            throw new gameException((e.getTarget().getMessage()));
+        }
+        catch (Exception e){
+            throw new gameException(e);
+        }
         return true;
     }
-
+    
 }

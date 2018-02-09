@@ -31,6 +31,7 @@ public class character implements character_interface {
     public boolean dead;
 
     private static final float speed = 1;
+    private static final int STEPS_PER_BLOCK = 32;
 
     public character(int x, int y, com.mygdx.game.screens.game game){
         characterTexture = new Texture(Gdx.files.internal("characters.png"));
@@ -83,8 +84,6 @@ public class character implements character_interface {
     public void setEnemyDirection(String[] enemyDirection) {
         this.enemyDirection = enemyDirection;
     }
-    
-    public void setEnemyDead(List<Boolean> list){enemyDead = list;}
     
     private TextureRegion[] characterFrames(TextureRegion[][] tmp, int x){
         TextureRegion[] frames = new TextureRegion[2];
@@ -158,7 +157,7 @@ public class character implements character_interface {
         }
     }
 
-    public void render(){
+    public void render() {
         if (isRunning){
             if (!isBlocked && !dead){
                 if (y < nextY){//up
@@ -210,6 +209,20 @@ public class character implements character_interface {
                 state = deadAnimation;
             }
         }
+        else {
+            if (currentCommand.equals("up")){
+                state = upIdleAnimation;
+            }
+            else if(currentCommand.equals("right")){
+                state = rightIdleAnimation;
+            }
+            else if(currentCommand.equals("down")){
+                state = downIdleAnimation;
+            }
+            else if(currentCommand.equals("left")){
+                state = leftIdleAnimation;
+            }
+        }
     }
     
     double distance(float x, float y){
@@ -218,38 +231,99 @@ public class character implements character_interface {
     
     // CHARACTER MOVEMENTS
     
+    public void end(){
+        nextY = y;
+        nextX = x;
+        isRunning = false;
+        attack = false;
+    }
     
-    public void moveUp(){
+    public void moveUp() throws gameException {
         gameTime = 0;
         nextY = y+steps;
         state = upWalkAnimation;
         currentCommand = "up";
-        while (nextY!=y && isRunning){}
-
+        while (nextY!=y && isRunning){
+            if (isBlocked) throw new gameException("Character is block");
+            if (dead) throw new gameException("Character is dead");
+        }
     }
-
-    public void moveDown(){
+    
+    public void moveDown() throws gameException{
         gameTime = 0;
         nextY = y-steps;
         state = downWalkAnimation;
         currentCommand = "down";
-        while (nextY!=y && isRunning){}
+        while (nextY!=y && isRunning){
+            if (isBlocked) throw new gameException("Character is block");
+            if (dead) throw new gameException("Character is dead");
+        }
     }
-
-    public void moveRight(){
+    
+    public void moveRight() throws gameException {
         gameTime = 0;
         nextX = x+steps;
         state = rightWalkAnimation;
         currentCommand = "right";
-        while (nextX!=x && isRunning){}
+        while (nextX!=x && isRunning){
+            if (isBlocked) throw new gameException("Character is block");
+            if (dead) throw new gameException("Character is dead");
+        }
     }
-
-    public void moveLeft(){
+    
+    public void moveLeft() throws gameException {
         gameTime = 0;
         nextX = x-steps;
         state = leftWalkAnimation;
         currentCommand = "left";
-        while (nextX!=x && isRunning){}
+        while (nextX!=x && isRunning){
+            if (isBlocked) throw new gameException("Character is block");
+            if (dead) throw new gameException("Character is dead");
+        }
+    }
+    
+    public void moveUp(int steps) throws gameException {
+        gameTime = 0;
+        nextY = y+(STEPS_PER_BLOCK*steps);
+        state = upWalkAnimation;
+        currentCommand = "up";
+        while (nextY!=y && isRunning){
+            if (isBlocked) throw new gameException("Character is block");
+            if (dead) throw new gameException("Character is dead");
+        }
+    }
+    
+    public void moveDown(int steps) throws gameException {
+        gameTime = 0;
+        nextY = y-(STEPS_PER_BLOCK*steps);
+        state = downWalkAnimation;
+        currentCommand = "down";
+        while (nextY!=y && isRunning){
+            if (isBlocked) throw new gameException("Character is block");
+            if (dead) throw new gameException("Character is dead");
+        }
+    }
+    
+    public void moveRight(int steps) throws gameException {
+        gameTime = 0;
+        nextX = x+(STEPS_PER_BLOCK*steps);
+        state = rightWalkAnimation;
+        currentCommand = "right";
+        while (nextX!=x && isRunning){
+            if (isBlocked) throw new gameException("Character is block");
+            if (dead) throw new gameException("Character is dead");
+        }
+    }
+    
+    public void moveLeft(int steps) throws gameException {
+        gameTime = 0;
+        nextX = x-(STEPS_PER_BLOCK*steps);
+        state = leftWalkAnimation;
+        currentCommand = "left";
+        while (nextX!=x && isRunning){
+            if (isBlocked) throw new gameException("Character is block");
+            if (dead) throw new gameException("Character is dead");
+        }
     }
     
     public void attack(String name){
